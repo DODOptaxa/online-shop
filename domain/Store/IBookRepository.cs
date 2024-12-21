@@ -9,6 +9,6 @@ namespace Store
     public interface IBookRepository
     {
 
-        ICollection<Book> GetAllByTitle(string title);
+        Book[] GetAllByTitle(string title);
     }
 }
