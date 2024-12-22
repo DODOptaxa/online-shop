@@ -12,6 +12,6 @@ public class BookRepository : IBookRepository
     
     public IEnumerable<Book> GetAllByTitle(string title)
     {
-        return books.Where(book => book.Title.Contains(title));
+        return books.Where(book => book.Title.ToLower().Contains(title.ToLower()));
     }
 }
