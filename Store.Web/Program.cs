@@ -7,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddSingleton<IBookRepository, BookRepository>();
+builder.Services.AddSingleton<BookService>();
 
 var app = builder.Build();
 
