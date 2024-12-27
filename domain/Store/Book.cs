@@ -1,4 +1,6 @@
-﻿namespace Store
+﻿using System.Text.RegularExpressions;
+
+namespace Store
 {
 
     public class Book
@@ -24,6 +26,12 @@
             if (query == null) return false;
 
             query = query.Trim();
+
+            query = query.Replace("-", "")
+                                .Replace(" ", "")
+                                .ToUpper();
+
+            return Regex.IsMatch(query, @"^ISBN\d{10}(\d{3})?$");
         }
     }
 
