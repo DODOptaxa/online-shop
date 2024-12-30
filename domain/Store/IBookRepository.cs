@@ -10,5 +10,7 @@ namespace Store
     {
         IEnumerable<Book> GetAllByISBN(string title);
         IEnumerable<Book> GetAllByTitleOrAuthor(string title);
+
+        Book GetById(int id);
     }
 }
