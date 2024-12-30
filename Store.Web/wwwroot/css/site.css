@@ -20,3 +20,11 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+nav .form-inline {
+    display: flex;
+    align-items: center; /* Вирівнювання по вертикалі */
+}
+nav.navbar {
+    padding-left: 20px; /* Відступ для зміщення всієї панелі */
+}
