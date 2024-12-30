@@ -25,6 +25,9 @@ nav .form-inline {
     display: flex;
     align-items: center; /* Вирівнювання по вертикалі */
 }
-nav.navbar {
+nav .navbar-brand{
     padding-left: 20px; /* Відступ для зміщення всієї панелі */
+}
+span .navbar-text{
+    padding-right: 20px;
 }
