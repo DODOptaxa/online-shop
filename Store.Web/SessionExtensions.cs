@@ -1,54 +1,36 @@
 ﻿using Store.Web.Models;
-using System.Text;
+using System.Text.Json;
 
 namespace Store.Web
 {
     public static class SessionExtensions
     {
-        private const string key = "Cart";
+        private const string Key = "Cart";
+
         public static void Set(this ISession session, Cart value)
         {
             if (value == null)
                 return;
 
-            using (var stream = new MemoryStream())
-                using (var writer = new BinaryWriter(stream, Encoding.UTF8, true))
-            {
-                writer.Write(value.Items.Count);
-                foreach (var item in value.Items)
-                {
-                    writer.Write(item.Key);
-                    writer.Write(item.Value);
-                }
+            // Серіалізуємо об'єкт `Cart` в JSON
+            var jsonData = JsonSerializer.Serialize(value);
 
-                writer.Write(value.Amount);
-
-                session.Set(key, stream.ToArray());
-            }
+            // Зберігаємо JSON в сесії
+            session.SetString(Key, jsonData);
         }
+
         public static bool TryGetCart(this ISession session, out Cart value)
         {
-            if (session.TryGetValue(key, out byte[] buffer))
+            // Отримуємо JSON-рядок з сесії
+            var jsonData = session.GetString(Key);
+
+            if (!string.IsNullOrEmpty(jsonData))
             {
-                using (var stream = new MemoryStream(buffer))
-                    using (var reader = new BinaryReader(stream, Encoding.UTF8, true))
-                { 
-                    value = new Cart();
-
-                    var legth = reader.ReadInt32();
-                    for(int i = 0; i < legth; i++)
-                    {
-                        var bookId = reader.ReadInt32();
-                        var count = reader.ReadInt32();
-
-                        value.Items.Add(bookId, count);
-                    }
-
-                    value.Amount = reader.ReadDecimal();
-
-                    return true;
-                }
+                // Десеріалізуємо JSON назад в об'єкт `Cart`
+                value = JsonSerializer.Deserialize<Cart>(jsonData);
+                return true;
             }
+
             value = null;
             return false;
         }
