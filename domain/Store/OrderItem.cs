@@ -10,7 +10,7 @@ namespace Store
     {
         public int BookId { get; }
 
-        public uint Count { get; }
+        public uint Count { get; set; }
 
         public decimal Price { get; }
 

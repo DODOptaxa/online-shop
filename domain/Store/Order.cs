@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -41,24 +42,47 @@ namespace Store
             get { return _items.Sum(item => item.Price * item.Count); }
         }
 
-        public void AddItem(Book book, uint count)
+        public void RemoveItem(int bookId)
+        {
+            int index = _items.FindIndex(item => item.BookId == bookId);
+            if (index == -1)
+                throw new InvalidOperationException("Order does not contain specified item." + bookId);
+            if (_items[index].Count - 1 <= 0)
+                _items.RemoveAt(index);
+
+            else _items[index].Count -= 1;
+        }
+
+        public void RemoveItems(int bookId)
+        {
+            int index = _items.FindIndex(item => item.BookId == bookId);
+            if (index == -1)
+                throw new InvalidOperationException("Order does not contain specified item." + bookId);
+            _items.RemoveAll(x => x.BookId == bookId);
+        }
+
+
+        public void AddItem(Book book)
         {
             if (book == null)
             {
                 throw new ArgumentNullException(nameof (book));
             }
 
-            var item = _items.SingleOrDefault(x => x.BookId == book.Id);
-
-            if (item == null)
-            {
-                _items.Add(new OrderItem(book.Id, count, book.Price));
-            }
+            int index = _items.FindIndex(item => item.BookId == book.Id);
+            if (index == -1)
+                _items.Add(new OrderItem(book.Id, 1, book.Price));
             else
-            {
-                _items.Remove(item);
-                _items.Add(new OrderItem(book.Id, item.Count + count, book.Price));
-            }
+                _items[index].Count += 1;
+        }
+
+        public OrderItem GetItem(int bookId)
+        {
+            int index = _items.FindIndex(item => item.BookId == bookId);
+            if (index == -1)
+                throw new InvalidOperationException("Book not found: " + bookId);
+
+            return _items[index];
         }
     }
 }
