@@ -31,3 +31,20 @@ nav .navbar-brand{
 span .navbar-text{
     padding-right: 20px;
 }
+table.table thead th {
+    background-color: #333; /* Темно-сірий фон */
+    color: white !important; /* Білий текст */
+}
+
+/* Рядки таблиці */
+table.table tbody tr:nth-child(odd) {
+    background-color: #f7f7f7; /* Світло-сірий фон для непарних рядків */
+}
+
+table.table tbody tr:nth-child(even) {
+    background-color: #eaeaea; /* Світліший сірий фон для парних рядків */
+}
+
+table.table tbody tr:hover {
+    background-color: #ddd; /* Темно-сірий фон при наведенні */
+}

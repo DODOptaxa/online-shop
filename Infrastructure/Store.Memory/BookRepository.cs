@@ -26,4 +26,13 @@ public class BookRepository : IBookRepository
         return books.Single(book => book.Id == id);
     }
 
+    public IEnumerable<Book> GetAllByIds(IEnumerable<int> bookIds)
+    {
+        var foundBooks = from book in books
+                         join bookId in bookIds on book.Id equals bookId
+                         select book;
+
+        return foundBooks;
+    }
+
 }

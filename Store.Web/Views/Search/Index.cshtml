@@ -24,6 +24,9 @@ else
                 <th>
                     @Html.DisplayNameFor(model => model.Title)
                 </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Price)
+                </th>
                 <th></th>
             </tr>
         </thead>
@@ -36,6 +39,9 @@ else
                     </td>
                     <td>
                          @Html.DisplayFor(modelItem => item.Title)
+                    </td>
+                    <td>
+                        @item.Price.ToString("C")
                     </td>
                     <td>
                         @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |

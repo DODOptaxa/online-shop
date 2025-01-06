@@ -22,7 +22,7 @@
                 @{
                     if (Context.Session.TryGetCart(out Cart cart) && cart.TotalCount != 0)
                     {
-                    <strong>В корзине @cart.TotalCount товаров, на сумму @cart.TotalPrice</strong>
+                        <a href="@Url.Action("Index", "Order")"><strong>В корзине @cart.TotalCount товаров, на сумму @cart.TotalPrice.ToString("C")</strong></a>
                     }
                     else
                     {
