@@ -12,6 +12,7 @@
 <table class="table">
     <thead>
         <tr>
+            <th></th>
             <th>
                 @Html.DisplayNameFor(model => model.Id)
             </th>
@@ -34,6 +35,9 @@
 @foreach (var item in Model.Items) {
         <tr>
             <td>
+                    <a asp-action="YourPage" asp-route-id="@item.BookId" class="rounded-circle text-secondary btn-minus-link" style="font-size: 24px;">&minus;</a>
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.BookId)
             </td>
             <td>
@@ -43,7 +47,11 @@
                 @Html.DisplayFor(modelItem => item.Author)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Count)
+                <div class="d-flex align-items-center">
+                    <a asp-action="RemoveItem" asp-controller="Order" asp-route-id="@item.BookId" class="btn btn-sm btn-outline-secondary ms-2">-</a>
+                    <span class="mx-2">@item.Count</span>
+                    <a asp-action="AddItem" asp-controller="Order" asp-route-id="@item.BookId" class="btn btn-sm btn-outline-secondary me-2">+</a>
+                </div>
             </td>
             <td>
                 @item.Price.ToString("C")

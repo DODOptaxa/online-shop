@@ -48,3 +48,27 @@ table.table tbody tr:nth-child(even) {
 table.table tbody tr:hover {
     background-color: #ddd; /* Темно-сірий фон при наведенні */
 }
+
+.big-cross {
+    font-size: 1.5rem; /* Збільшений розмір */
+    font-weight: bold; /* Жирний */
+}
+table.table tbody td{
+    vertical-align: middle
+}
+.btn-minus-link {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+    text-align: center;
+    border-radius: 50%;
+    background-color: #343a40;
+    color: white !important;
+    text-decoration: none;
+}
+
+    .btn-minus-link:hover {
+        background-color: #dc3545;
+        color: white !important;
+    }
