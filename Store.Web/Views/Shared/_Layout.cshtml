@@ -20,17 +20,13 @@
             </form>
             <span class="navbar-text ms-lg-auto me-4">
                 @{
-                    Cart cart;
-                    if (!Context.Session.TryGetCart(out cart))
-                        cart = new Cart();
-
-                    if (cart.Items.Count == 0)
+                    if (Context.Session.TryGetCart(out Cart cart) && cart.TotalCount != 0)
                     {
-                        <strong>Корзина пуста</strong>
+                        <a href="@Url.Action("Index", "Order")"><strong>В корзине @cart.TotalCount товаров, на сумму @cart.TotalPrice.ToString("C")</strong></a>
                     }
                     else
                     {
-                        <strong>В корзине @cart.Items.Values.Sum() товаров, на сумму @cart.Amount</strong>
+                        <strong>Корзина пуста</strong>
                     }
                 }
             </span>
