@@ -1,5 +1,6 @@
 using Store;
 using Store.Memory;
+using Store.Messages;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,7 @@ builder.Services.AddSession
 builder.Services.AddSingleton<IBookRepository, BookRepository>();
 builder.Services.AddSingleton<IOrderRepository, OrderRepository>();
 builder.Services.AddSingleton<BookService>();
+builder.Services.AddSingleton<INotificationService, DebugNotificationService>();
 
 var app = builder.Build();
 

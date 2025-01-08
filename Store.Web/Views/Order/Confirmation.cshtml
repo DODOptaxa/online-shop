@@ -1,0 +1,36 @@
+﻿@model ConfirmationViewModel
+@{
+    ViewData["Title"] = "Подтверждение мобильного";
+}
+<h1>Подтверждение мобильного</h1>
+<form action="@Url.Action("StartDelivery")" method="post">
+    <input type="hidden" name="id" value="@Model.OrderId" />
+    <input type="hidden" name="cellPhone" value="@Model.CellPhone" />
+    <div class="form-group">
+        <label for="code">Код потдверждения</label>
+        <div class="phone-input-wrapper">
+            <input type="text" class="code" name="code" placeholder="0000" maxlength="4" />
+        </div>
+            @if (Model.Errors.ContainsKey("code"))
+            {
+                <small class="form-text text-danger">@Model.Errors["code"]</small>
+            }
+    </div>
+    <button type="submit" class="btn btn-success mt-3">Проверить</button>
+</form>
+<form action="@Url.Action("SendConfirmationCode")" method="post">
+    <input type="hidden" name="id" value="@Model.OrderId" />
+    <div class="form-group">
+        <label for="cellPhone">Изменить номер</label>
+        <div class="phone-input-wrapper">
+            <div class="phone-input-prefix">+380</div>
+            <input type="text" class="phone-input-field" name="cellPhone" value="@Model.CellPhone" placeholder="00-000-0000" />
+        </div>
+        @if (Model.Errors.ContainsKey("cellPhone"))
+        {
+            <small class="form-text text-danger">@Model.Errors["cellPhone"]</small>
+        }
+    </div>
+    <input type="hidden" name="reset" value="true" />
+    <button type="submit" class="btn btn-success mt-3">Отправить код повторно</button>
+</form>

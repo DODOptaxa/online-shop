@@ -48,9 +48,15 @@
             </td>
             <td>
                 <div class="d-flex align-items-center">
-                    <a asp-action="RemoveItem" asp-controller="Order" asp-route-id="@item.BookId" class="btn btn-sm btn-outline-secondary ms-2">-</a>
+                    <form asp-action="RemoveItem" asp-controller="Order" method="post" class="d-inline">
+                        <input type="hidden" name="id" value="@item.BookId" />
+                        <button type="submit" class="btn btn-sm btn-outline-secondary ms-2">-</button>
+                    </form>
                     <span class="mx-2">@item.Count</span>
-                    <a asp-action="AddItem" asp-controller="Order" asp-route-id="@item.BookId" class="btn btn-sm btn-outline-secondary me-2">+</a>
+                    <form asp-action="AddItem" asp-controller="Order" method="post" class="d-inline">
+                        <input type="hidden" name="id" value="@item.BookId" />
+                        <button type="submit" class="btn btn-sm btn-outline-secondary me-2">+</button>
+                    </form>
                 </div>
             </td>
             <td>
@@ -74,3 +80,18 @@
         </strong>
     </div>
 </div>
+<form action="@Url.Action("SendConfirmationCode")" method="post">
+    <input type="hidden" name="id" value="@Model.Id" />
+    <div class="form-group">
+        <label for="cellPhone">Номер телефона</label>
+        <div class="phone-input-wrapper">
+            <div class="phone-input-prefix">+380</div>
+            <input type="text" class="phone-input-field" name="cellPhone" value="" placeholder="00-000-0000" />
+        </div>
+        @if (Model.Errors.ContainsKey("cellPhone"))
+        {
+            <small class="form-text text-danger">@Model.Errors["cellPhone"]</small>
+        }
+    </div>
+    <button type="submit" class="btn btn-success mt-3">Отправить код</button>
+</form>
