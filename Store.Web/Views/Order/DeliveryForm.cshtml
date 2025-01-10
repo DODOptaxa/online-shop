@@ -1,0 +1,40 @@
+﻿@model DeliveryDetailsViewModel
+@{
+    ViewData["Title"] = "Параметры доставки";
+}
+
+<form action="@Url.Action("UpdateDelivery")" method="post" id="deliveryForm">
+    <input type="hidden" name="id" value="@Model.OrderId" />
+    <div class="form-group">
+        <label for="code">Способ доставки</label>
+
+        <select class="form-control" name="Code" onchange="document.getElementById('deliveryForm').submit();">
+            @foreach (var method in Model.DeliveryContractors)
+            {
+                if (Model.Form != null && method.Key == Model.Form.Code){}
+                <option value="@method.Key">@method.Value</option>
+            }
+        </select>
+    </div>
+    @foreach (var field in Model.Form.Fields)
+    {
+        <div class="form-group">
+            <label for="@field.Name">@field.Label</label>
+            <select class="form-control" name="values[@field.Name]" id="@field.Name" onchange="document.getElementById('deliveryForm').submit();">
+                @foreach (var item in field.Items)
+                {
+                    if (field.Recorder && item.Key == field.Value)
+                    {
+                        <option selected value="@field.Value">@item.Value</option>
+                    }
+                    else
+                    {
+                        <option value="@item.Key">@item.Value</option>
+                    }
+                }
+            </select>
+        </div>
+    }
+
+</form>
+<button type="submit" class="btn btn-success">Підтвердити</button>
