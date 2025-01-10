@@ -1,4 +1,5 @@
 using Store;
+using Store.Contractors;
 using Store.Memory;
 using Store.Messages;
 
@@ -19,6 +20,7 @@ builder.Services.AddSession
 builder.Services.AddSingleton<IBookRepository, BookRepository>();
 builder.Services.AddSingleton<IOrderRepository, OrderRepository>();
 builder.Services.AddSingleton<BookService>();
+builder.Services.AddSingleton<IDeliveryService, NovaPoshtaPostmateDeliveryService>();
 builder.Services.AddSingleton<INotificationService, DebugNotificationService>();
 
 var app = builder.Build();

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Store.Memory;
+using Store.Contractors;
 using Store.Messages;
 using Store.Web.Models;
 using System.Text.RegularExpressions;
@@ -11,14 +12,16 @@ namespace Store.Web.Controllers
         private readonly IBookRepository _bookRepository;
         private readonly IOrderRepository _orderRepository;
         private readonly INotificationService _notificationService;
+        private readonly IEnumerable<IDeliveryService> _deliveryServices;
 
         public OrderController(IBookRepository bookRepository, IOrderRepository orderRepository,
-                                INotificationService notificationService)
+                                INotificationService notificationService, IEnumerable<IDeliveryService> deliveryServices)
                                 
         {
             _bookRepository = bookRepository;
             _orderRepository = orderRepository;
             _notificationService = notificationService;
+            _deliveryServices = deliveryServices;
         }
 
         private OrderViewModel Map(Order order)
@@ -122,7 +125,7 @@ namespace Store.Web.Controllers
         }
 
         [HttpPost]
-        public IActionResult StartDelivery(int id, string cellPhone, int code)
+        public IActionResult Confirmate(int id, string cellPhone, int code)
         {
             int? storedCode = HttpContext.Session.GetInt32(cellPhone);
             if (storedCode == null)
@@ -152,8 +155,44 @@ namespace Store.Web.Controllers
                             }); ;
             }
             cellPhone = "+380" + cellPhone;
-            return View();
+
+            //todo : сохранить номер телефона
+
+            HttpContext.Session.Remove(cellPhone);
+
+
+            return RedirectToAction("StartDelivery", new { id });
         }
+
+
+        public IActionResult StartDelivery(int id)
+        {
+            var deliveryService = _deliveryServices.First();
+            var order = _orderRepository.GetById(id);
+            var form = deliveryService.CreateForm(order.Id);
+            var model = new DeliveryDetailsViewModel
+            {
+                DeliveryContractors = _deliveryServices.ToDictionary(service => service.Code,
+                                                        service => service.Title),
+                Form = form
+            };
+            return View("DeliveryForm", model);
+        }
+        public IActionResult UpdateDelivery(int id, string Code, Dictionary<string, string> values)
+        {
+            _orderRepository.GetById(id);
+            var deliveryService = _deliveryServices.Single(service => service.Code == Code);
+            var form = deliveryService.CreateUpdatedForm(id, values);
+            var model = new DeliveryDetailsViewModel
+            {
+                DeliveryContractors = _deliveryServices.ToDictionary(service => service.Code,
+                                            service => service.Title),
+                Form = form
+            };
+            return View("DeliveryForm", model);
+        }
+
+
 
         private bool IsValidCellPhone(string cellPhone)
         {
@@ -190,5 +229,7 @@ namespace Store.Web.Controllers
 
             return (order, cart);
         }
+
+        
     }
 }
