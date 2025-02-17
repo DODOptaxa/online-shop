@@ -35,7 +35,10 @@
 @foreach (var item in Model.Items) {
         <tr>
             <td>
-                    <a asp-action="YourPage" asp-route-id="@item.BookId" class="rounded-circle text-secondary btn-minus-link" style="font-size: 24px;">&minus;</a>
+                    <form asp-action="RemoveItems" asp-route-id="@item.BookId" method="post" style="display: inline;">
+                        <button type="submit" class="rounded-circle text-secondary btn-minus-link" style="font-size: 24px;">&minus;</button>
+                    </form>
+
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.BookId)

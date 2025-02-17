@@ -8,17 +8,23 @@
     <div class="form-group">
         <label for="code">Способ доставки</label>
 
-        <select class="form-control" name="Code" onchange="document.getElementById('deliveryForm').submit();">
+        <select class="form-control" name="deliveryCode" onchange="document.getElementById('deliveryForm').submit();">
             @foreach (var method in Model.DeliveryContractors)
             {
-                if (Model.Form != null && method.Key == Model.Form.Code){}
-                <option value="@method.Key">@method.Value</option>
+                if (Model.DeliveryForm != null && method.Key == Model.DeliveryForm.Code)
+                {
+                    <option selected value="@method.Key">@method.Value</option>
+                }
+                else 
+                {
+                    <option value="@method.Key">@method.Value</option>
+                }
             }
         </select>
     </div>
-    @foreach (var field in Model.Form.Fields)
+    @foreach (var field in Model.DeliveryForm.Fields)
     {
-        <div class="form-group">
+        <div class="DeliveryForm-group">
             <label for="@field.Name">@field.Label</label>
             <select class="form-control" name="values[@field.Name]" id="@field.Name" onchange="document.getElementById('deliveryForm').submit();">
                 @foreach (var item in field.Items)
@@ -35,6 +41,41 @@
             </select>
         </div>
     }
+        <div class="form-group">
+            <label for="code">Способ оплаты</label>
 
+            <select class="form-control" name="paymentCode" onchange="document.getElementById('deliveryForm').submit();">
+                @foreach (var method in Model.PaymentContractors)
+                {
+                if (Model.PaymentForm != null && method.Key == Model.PaymentForm.Code)
+                {
+                    <option selected value="@method.Key">@method.Value</option>
+                }
+                else
+                {
+                    <option value="@method.Key">@method.Value</option>
+                }
+                }
+            </select>
+        </div>
+        @foreach (var field in Model.PaymentForm.Fields)
+        {
+            <div class="DeliveryForm-group">
+                <label for="@field.Name">@field.Label</label>
+            <select class="form-control" name="values[@field.Name]" id="@field.Name" onchange="document.getElementById('deliveryForm').submit();">
+                    @foreach (var item in field.Items)
+                    {
+                        if (field.Recorder && item.Key == field.Value)
+                        {
+                            <option selected value="@field.Value">@item.Value</option>
+                        }
+                        else
+                        {
+                            <option value="@item.Key">@item.Value</option>
+                        }
+                    }
+                </select>
+            </div>
+        }
+    <button type="submit" class="btn btn-success" name="final" value="true">Підтвердити</button>
 </form>
-<button type="submit" class="btn btn-success">Підтвердити</button>

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Store.Contractors
 {
-    public interface IDeliveryService
+    public interface IPaymentService
     {
         string Code { get; }
 
@@ -16,7 +16,7 @@ namespace Store.Contractors
 
         Form CreateUpdatedForm(int orderId, IReadOnlyDictionary<string, string> values);
 
-        OrderDelivery CreateDelivery(Form form);
+        OrderPayment CreatePayment(Form form);
 
     }
 }

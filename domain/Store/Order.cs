@@ -13,6 +13,26 @@ namespace Store
 
         private List<OrderItem> _items;
 
+        public string CellPhone { get; set; }
+
+        public OrderDelivery Delivery { get; set; }
+
+        public OrderPayment Payment { get; set; }
+        public IReadOnlyCollection<OrderItem> Items
+        {
+            get { return _items; }
+        }
+
+        public uint TotalCount
+        {
+            get { return (uint)Items.Sum(item => item.Count); }
+        }
+
+        public decimal TotalPrice
+        {
+            get { return _items.Sum(item => item.Price * item.Count) + (Delivery?.Amount ?? 0); }
+        }
+
         //------------------------------------
 
         public Order(int id, IEnumerable<OrderItem> items)
@@ -26,21 +46,7 @@ namespace Store
         }
 
         //------------------------------------
- 
-        public IReadOnlyCollection<OrderItem> Items
-        {
-            get { return _items; }
-        }
 
-        public uint TotalCount
-        {
-            get { return (uint)Items.Sum(item => item.Count); }
-        }
-
-        public decimal TotalPrice
-        {
-            get { return _items.Sum(item => item.Price * item.Count); }
-        }
 
         public void RemoveItem(int bookId)
         {
