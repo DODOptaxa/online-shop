@@ -29,6 +29,31 @@
 
         public string Title => "Поштомат Нова Пошта";
 
+        public OrderDelivery CreateDelivery(Form form)
+        {
+            if (Code != form.Code)
+                throw new ArgumentException("Ivalid form");
+
+            var cityId = form.Fields.Single(field => field.Name == "city").Value;
+            var cityName = cities[cityId];
+            var postamateId = form.Fields.
+                              Single(field => field.Name == "postamate")
+                              .Value;
+
+            var postamateName = postamates[cityId][postamateId];
+
+
+            var parameters = new Dictionary<string, string>()
+            {
+                {nameof(cityId), cityId},
+                {nameof(cityName), cityName},
+                {nameof(postamateId), postamateId},
+                {nameof(postamateName), postamateName},
+            };
+            var description = $"Город: {cityName}\nПостамат: {postamateName}";
+            return new OrderDelivery(Code, description, 150m, parameters);
+        }
+
         public Form CreateForm(int orderId)
         {
             return new Form(Code, orderId, new[]

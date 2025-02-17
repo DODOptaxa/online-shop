@@ -13,15 +13,18 @@ namespace Store.Web.Controllers
         private readonly IOrderRepository _orderRepository;
         private readonly INotificationService _notificationService;
         private readonly IEnumerable<IDeliveryService> _deliveryServices;
+        private readonly IEnumerable<IPaymentService> _paymentServices;
 
         public OrderController(IBookRepository bookRepository, IOrderRepository orderRepository,
-                                INotificationService notificationService, IEnumerable<IDeliveryService> deliveryServices)
+                                INotificationService notificationService, IEnumerable<IDeliveryService> deliveryServices,
+                                IEnumerable<IPaymentService> paymentServices)
                                 
         {
             _bookRepository = bookRepository;
             _orderRepository = orderRepository;
             _notificationService = notificationService;
             _deliveryServices = deliveryServices;
+            _paymentServices = paymentServices;
         }
 
         private OrderViewModel Map(Order order)
@@ -99,6 +102,19 @@ namespace Store.Web.Controllers
         }
 
         [HttpPost]
+        public IActionResult RemoveItems(int id)
+        {
+            (Order order, Cart cart) = GetOrCreateOrderAndCart();
+
+            order.RemoveItems(id);
+
+            SaveOrderAndCart(order, cart);
+
+            var model = Map(order);
+            return View("Index", model);
+        }
+
+        [HttpPost]
         public IActionResult SendConfirmationCode(int id, string cellPhone, bool reset=false)
         {
             var order = _orderRepository.GetById(id);
@@ -158,6 +174,12 @@ namespace Store.Web.Controllers
 
             //todo : сохранить номер телефона
 
+            var order = _orderRepository.GetById(id);
+
+            order.CellPhone = cellPhone;
+
+            _orderRepository.Update(order);
+
             HttpContext.Session.Remove(cellPhone);
 
 
@@ -168,29 +190,54 @@ namespace Store.Web.Controllers
         public IActionResult StartDelivery(int id)
         {
             var deliveryService = _deliveryServices.First();
+            var paymentService = _paymentServices.First();
             var order = _orderRepository.GetById(id);
-            var form = deliveryService.CreateForm(order.Id);
+            var deliveryForm = deliveryService.CreateForm(order.Id);
+            var paymentForm = paymentService.CreateForm(order.Id);
             var model = new DeliveryDetailsViewModel
             {
                 DeliveryContractors = _deliveryServices.ToDictionary(service => service.Code,
                                                         service => service.Title),
-                Form = form
+                DeliveryForm = deliveryForm,
+                PaymentForm = paymentForm,
+                PaymentContractors = _paymentServices.ToDictionary(service => service.Code,
+                                                    service => service.Title),
             };
             return View("DeliveryForm", model);
+            
+            //РЕАЛИЗОВАТЬ ОПЛАТУ
         }
-        public IActionResult UpdateDelivery(int id, string Code, Dictionary<string, string> values)
+        public IActionResult UpdateDelivery(int id, string deliveryCode, string paymentCode, Dictionary<string, string> values, bool final = false)
         {
-            _orderRepository.GetById(id);
-            var deliveryService = _deliveryServices.Single(service => service.Code == Code);
-            var form = deliveryService.CreateUpdatedForm(id, values);
+            
+            var deliveryService = _deliveryServices.Single(service => service.Code == deliveryCode);
+            var paymentService = _paymentServices.Single(service => service.Code == paymentCode);
+            var deliveryForm = deliveryService.CreateUpdatedForm(id, values);
+            var paymentForm = paymentService.CreateUpdatedForm(id, values);
+
             var model = new DeliveryDetailsViewModel
             {
                 DeliveryContractors = _deliveryServices.ToDictionary(service => service.Code,
                                             service => service.Title),
-                Form = form
+                DeliveryForm = deliveryForm,
+                PaymentForm = paymentForm,
+                PaymentContractors = _paymentServices.ToDictionary(service => service.Code,
+                                                    service => service.Title),
             };
+            Console.WriteLine(final);
+            if (final)
+            {
+                var order = _orderRepository.GetById(id);
+                order.Payment = paymentService.CreatePayment(paymentForm);
+                order.Delivery = deliveryService.CreateDelivery(deliveryForm);
+                _orderRepository.Update(order);
+                return View("Finish");
+
+            }
             return View("DeliveryForm", model);
         }
+
+
 
 
 

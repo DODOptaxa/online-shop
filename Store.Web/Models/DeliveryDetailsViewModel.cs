@@ -4,10 +4,14 @@ namespace Store.Web.Models
 {
     public class DeliveryDetailsViewModel
     {
-        public Form Form { get; set; }
+        public Form DeliveryForm { get; set; }
 
-        public int OrderId { get { return Form.OrderId; } }
+        public Form PaymentForm { get; set; }
+
+        public int OrderId { get { return DeliveryForm.OrderId; } }
 
         public IReadOnlyDictionary<string, string> DeliveryContractors { get; set; }
+
+        public IReadOnlyDictionary<string, string> PaymentContractors { get; set; }
     }
 }
