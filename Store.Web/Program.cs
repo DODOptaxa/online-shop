@@ -1,7 +1,10 @@
+
 using Store;
 using Store.Contractors;
+using Store.Contractors.RoboKassa;
 using Store.Memory;
 using Store.Messages;
+using Store.Web.Contractors;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +26,8 @@ builder.Services.AddSingleton<BookService>();
 builder.Services.AddSingleton<IDeliveryService, NovaPoshtaPostmateDeliveryService>();
 builder.Services.AddSingleton<INotificationService, DebugNotificationService>();
 builder.Services.AddSingleton<IPaymentService, CashPaymentService>();
+builder.Services.AddSingleton<IPaymentService, RoboKassaPaymentService>();
+builder.Services.AddSingleton<IWebContractorService, RoboKassaPaymentService>();
 
 var app = builder.Build();
 
@@ -36,15 +41,23 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
+
 
 app.UseAuthorization();
 
 app.UseSession();
 
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapAreaControllerRoute(
+    name: "robokassa",
+    areaName: "RoboKassa",
+    pattern: "RoboKassa/{controller=Home}/{action=Index}/{id?}"
+    );
+
 
 app.Run();
