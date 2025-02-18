@@ -4,6 +4,7 @@ using Store.Contractors;
 using Store.Messages;
 using Store.Web.Models;
 using System.Text.RegularExpressions;
+using Store.Web.Contractors;
 
 namespace Store.Web.Controllers
 {
@@ -14,10 +15,11 @@ namespace Store.Web.Controllers
         private readonly INotificationService _notificationService;
         private readonly IEnumerable<IDeliveryService> _deliveryServices;
         private readonly IEnumerable<IPaymentService> _paymentServices;
+        private readonly IEnumerable<IWebContractorService> _webContracts;
 
         public OrderController(IBookRepository bookRepository, IOrderRepository orderRepository,
                                 INotificationService notificationService, IEnumerable<IDeliveryService> deliveryServices,
-                                IEnumerable<IPaymentService> paymentServices)
+                                IEnumerable<IPaymentService> paymentServices, IEnumerable<IWebContractorService> webContracts)
                                 
         {
             _bookRepository = bookRepository;
@@ -25,6 +27,7 @@ namespace Store.Web.Controllers
             _notificationService = notificationService;
             _deliveryServices = deliveryServices;
             _paymentServices = paymentServices;
+            _webContracts = webContracts;
         }
 
         private OrderViewModel Map(Order order)
@@ -231,6 +234,9 @@ namespace Store.Web.Controllers
                 order.Payment = paymentService.CreatePayment(paymentForm);
                 order.Delivery = deliveryService.CreateDelivery(deliveryForm);
                 _orderRepository.Update(order);
+                var webContractorService = _webContracts.SingleOrDefault(service => service.Code == paymentCode);
+                if (webContractorService != null)
+                    return Redirect(webContractorService.GetUri);
                 return View("Finish");
 
             }
@@ -238,7 +244,11 @@ namespace Store.Web.Controllers
         }
 
 
-
+        public IActionResult Finish()
+        {
+            HttpContext.Session.RemoveCart();
+            return View();
+        }
 
 
         private bool IsValidCellPhone(string cellPhone)
