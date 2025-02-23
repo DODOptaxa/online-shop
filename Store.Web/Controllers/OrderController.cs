@@ -5,6 +5,7 @@ using Store.Messages;
 using Store.Web.Models;
 using System.Text.RegularExpressions;
 using Store.Web.Contractors;
+using System.Globalization;
 
 namespace Store.Web.Controllers
 {
@@ -67,54 +68,65 @@ namespace Store.Web.Controllers
             return View("Empty");
         }
         [HttpPost]
-        public IActionResult AddItem(int id, bool inCart = true)
+        public IActionResult AddItem(int id)
         {
-            if (id < 0) return BadRequest("Ты чё сука, далбаёб блять? какой нахуй id " + id);
+            if (id < 0) return Json(new { success = false, message = "Ты чё сука, далбаёб блять? какой нахуй id " + id });
 
             (Order order, Cart cart) = GetOrCreateOrderAndCart();
-
             var book = _bookRepository.GetById(id);
+            if (book == null) return Json(new { success = false });
 
             order.AddItem(book);
-
-            //-----------------------------
-
             SaveOrderAndCart(order, cart);
 
-            if (inCart)
+            var item = order.Items.FirstOrDefault(i => i.BookId == id);
+            return Json(new
             {
-                var model = Map(order);
-                return View("Index", model);
-            }
-            else
-            {
-                return RedirectToAction("Index", "Book", new {id});
-            }
+                success = true,
+                totalCount = cart.TotalCount,
+                totalPrice = cart.TotalPrice.ToString("C"),
+                itemCount = item?.Count ?? 0
+            });
         }
+
         [HttpPost]
         public IActionResult RemoveItem(int id)
         {
             (Order order, Cart cart) = GetOrCreateOrderAndCart();
+            var item = order.Items.FirstOrDefault(i => i.BookId == id);
+            if (item == null) return Json(new { success = false });
 
-            order.RemoveItem(id);
-
+            order.RemoveItem(id); // Припускаю, що це зменшує кількість на 1
             SaveOrderAndCart(order, cart);
 
-            var model = Map(order);
-            return View("Index", model);
+            var updatedItem = order.Items.FirstOrDefault(i => i.BookId == id);
+            return Json(new
+            {
+                success = true,
+                totalCount = cart.TotalCount,
+                totalPrice = cart.TotalPrice.ToString("C"),
+                itemCount = updatedItem?.Count ?? 0
+            });
         }
 
         [HttpPost]
         public IActionResult RemoveItems(int id)
         {
             (Order order, Cart cart) = GetOrCreateOrderAndCart();
+            var item = order.Items.FirstOrDefault(i => i.BookId == id);
+            if (item == null) return Json(new { success = false });
 
-            order.RemoveItems(id);
-
+            order.RemoveItems(id); // Припускаю, що це видаляє весь товар
             SaveOrderAndCart(order, cart);
 
-            var model = Map(order);
-            return View("Index", model);
+            var updatedItem = order.Items.FirstOrDefault(i => i.BookId == id);
+            return Json(new
+            {
+                success = true,
+                totalCount = cart.TotalCount,
+                totalPrice = cart.TotalPrice.ToString("C"),
+                itemCount = updatedItem?.Count ?? 0
+            });
         }
 
         [HttpPost]
@@ -125,10 +137,10 @@ namespace Store.Web.Controllers
             var model = Map(order);
             if (!IsValidCellPhone(cellPhone))
             {
-                model.Errors["cellPhone"] = "Номер телефона не соответствует формату +380-00-000-0000";
+                model.Errors["cellPhone"] = "Номер телефону не відповідає формату +380-00-000-0000";
                 if (reset) return View("Confirmation", new ConfirmationViewModel { OrderId = id,
                                         CellPhone = cellPhone, Errors = new Dictionary<string, string> {
-                                        { "cellPhone", "Номер телефона не соответствует формату +380-00-000-0000" }
+                                        { "cellPhone", "Номер телефону не відповідає формату +380-00-000-0000" }
                                         }});
                 return View("Index", model);
             }
@@ -156,7 +168,7 @@ namespace Store.Web.Controllers
                                 CellPhone = cellPhone,
                                 Errors = new Dictionary<string, string>
                                 {
-                                    { "code", "Пустой код, повторите отправку" }
+                                    { "code", "Пустий код, повторіть відправку" }
                                 },
                             }); ;
             }
@@ -169,7 +181,7 @@ namespace Store.Web.Controllers
                                 CellPhone = cellPhone,
                                 Errors = new Dictionary<string, string>
                                 {
-                                    { "code", "Отличается от отправленного" }
+                                    { "code", "Відрізняється від відправленого" }
                                 },
                             }); ;
             }
@@ -208,7 +220,7 @@ namespace Store.Web.Controllers
             };
             return View("DeliveryForm", model);
             
-            //РЕАЛИЗОВАТЬ ОПЛАТУ
+            
         }
         public IActionResult UpdateDelivery(int id, string deliveryCode, string paymentCode, Dictionary<string, string> values, bool final = false)
         {
@@ -235,9 +247,12 @@ namespace Store.Web.Controllers
                 order.Delivery = deliveryService.CreateDelivery(deliveryForm);
                 _orderRepository.Update(order);
                 var webContractorService = _webContracts.SingleOrDefault(service => service.Code == paymentCode);
+                string path = "";
                 if (webContractorService != null)
-                    return Redirect(webContractorService.GetUri);
-                return View("Finish");
+                {
+                    return RedirectToAction("Index", "Home", new { area = webContractorService.GetUri, totalPrice = order.TotalPrice - order.Delivery.Amount });
+                }
+                else return View("Finish");
 
             }
             return View("DeliveryForm", model);

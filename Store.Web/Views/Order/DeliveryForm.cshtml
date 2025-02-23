@@ -1,81 +1,70 @@
 ﻿@model DeliveryDetailsViewModel
 @{
-    ViewData["Title"] = "Параметры доставки";
+    ViewData["Title"] = "Параметри доставки";
 }
 
-<form action="@Url.Action("UpdateDelivery")" method="post" id="deliveryForm">
-    <input type="hidden" name="id" value="@Model.OrderId" />
-    <div class="form-group">
-        <label for="code">Способ доставки</label>
-
-        <select class="form-control" name="deliveryCode" onchange="document.getElementById('deliveryForm').submit();">
-            @foreach (var method in Model.DeliveryContractors)
-            {
-                if (Model.DeliveryForm != null && method.Key == Model.DeliveryForm.Code)
-                {
-                    <option selected value="@method.Key">@method.Value</option>
-                }
-                else 
-                {
-                    <option value="@method.Key">@method.Value</option>
-                }
-            }
-        </select>
-    </div>
-    @foreach (var field in Model.DeliveryForm.Fields)
-    {
-        <div class="DeliveryForm-group">
-            <label for="@field.Name">@field.Label</label>
-            <select class="form-control" name="values[@field.Name]" id="@field.Name" onchange="document.getElementById('deliveryForm').submit();">
-                @foreach (var item in field.Items)
-                {
-                    if (field.Recorder && item.Key == field.Value)
-                    {
-                        <option selected value="@field.Value">@item.Value</option>
-                    }
-                    else
-                    {
-                        <option value="@item.Key">@item.Value</option>
-                    }
-                }
-            </select>
-        </div>
-    }
-        <div class="form-group">
-            <label for="code">Способ оплаты</label>
-
-            <select class="form-control" name="paymentCode" onchange="document.getElementById('deliveryForm').submit();">
-                @foreach (var method in Model.PaymentContractors)
-                {
-                if (Model.PaymentForm != null && method.Key == Model.PaymentForm.Code)
-                {
-                    <option selected value="@method.Key">@method.Value</option>
-                }
-                else
-                {
-                    <option value="@method.Key">@method.Value</option>
-                }
-                }
-            </select>
-        </div>
-        @foreach (var field in Model.PaymentForm.Fields)
-        {
-            <div class="DeliveryForm-group">
-                <label for="@field.Name">@field.Label</label>
-            <select class="form-control" name="values[@field.Name]" id="@field.Name" onchange="document.getElementById('deliveryForm').submit();">
-                    @foreach (var item in field.Items)
-                    {
-                        if (field.Recorder && item.Key == field.Value)
+<div class="container py-5">
+    <h1 class="mb-4 fw-bold text-dark">Параметри доставки</h1>
+    <form action="@Url.Action("UpdateDelivery")" method="post" id="deliveryForm" class="card p-4 shadow-sm">
+        <input type="hidden" name="id" value="@Model.OrderId" />
+        <div class="row">
+            <!-- Ліва колонка: Способи доставки -->
+            <div class="col-md-6 mb-4">
+                <h3 class="mb-3 fw-bold text-dark">Доставка</h3>
+                <div class="mb-3">
+                    <label for="deliveryCode" class="form-label">Спосіб доставки</label>
+                    <select class="form-select" name="deliveryCode" onchange="document.getElementById('deliveryForm').submit();">
+                        @foreach (var method in Model.DeliveryContractors)
                         {
-                            <option selected value="@field.Value">@item.Value</option>
+                            <option value="@method.Key" selected="@(Model.DeliveryForm?.Code == method.Key ? "selected" : null)">@method.Value</option>
                         }
-                        else
-                        {
-                            <option value="@item.Key">@item.Value</option>
-                        }
-                    }
-                </select>
+                    </select>
+                </div>
+                @foreach (var field in Model.DeliveryForm.Fields)
+                {
+                    <div class="mb-3">
+                        <label for="@field.Name" class="form-label">@field.Label</label>
+                        <select class="form-select" name="values[@field.Name]" id="@field.Name" onchange="document.getElementById('deliveryForm').submit();">
+                            @foreach (var item in field.Items)
+                            {
+                                <option value="@item.Key" selected="@(field.Recorder && item.Key == field.Value ? "selected" : null)">@item.Value</option>
+                            }
+                        </select>
+                    </div>
+                }
             </div>
-        }
-    <button type="submit" class="btn btn-success" name="final" value="true">Підтвердити</button>
-</form>
+
+            <!-- Права колонка: Способи оплати -->
+            <div class="col-md-6 mb-4">
+                <h3 class="mb-3 fw-bold text-dark">Оплата</h3>
+                <div class="mb-3">
+                    <label for="paymentCode" class="form-label">Спосіб оплати</label>
+                    <select class="form-select" name="paymentCode" onchange="document.getElementById('deliveryForm').submit();">
+                        @foreach (var method in Model.PaymentContractors)
+                        {
+                            <option value="@method.Key" selected="@(Model.PaymentForm?.Code == method.Key ? "selected" : null)">@method.Value</option>
+                        }
+                    </select>
+                </div>
+                @foreach (var field in Model.PaymentForm.Fields)
+                {
+                    <div class="mb-3">
+                        <label for="@field.Name" class="form-label">@field.Label</label>
+                        <select class="form-select" name="values[@field.Name]" id="@field.Name" onchange="document.getElementById('deliveryForm').submit();">
+                            @foreach (var item in field.Items)
+                            {
+                                <option value="@item.Key" selected="@(field.Recorder && item.Key == field.Value ? "selected" : null)">@item.Value</option>
+                            }
+                        </select>
+                    </div>
+                }
+            </div>
+        </div>
+        <!-- Кнопка внизу -->
+        <div class="row">
+            <div class="col-12">
+                <button type="submit" class="btn btn-success btn-custom w-100 mt-3" name="final" value="true">Підтвердити</button>
+            </div>
+        </div>
+    </form>
+</div>
