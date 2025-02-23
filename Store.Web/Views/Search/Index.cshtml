@@ -21,7 +21,7 @@
                             <p class="card-text">ID: @item.Id</p>
                             <p class="card-text"><strong>Ціна:</strong> @item.Price.ToString("C")</p>
                             <div class="d-flex justify-content-between align-items-center">
-                                <button onclick="updateCart(@item.Id)" class="btn btn-success btn-sm btn-custom btn-add-to-cart">
+                                <button onclick="updateCartWiggle(@item.Id)" class="btn btn-success btn-sm btn-custom btn-add-to-cart">
                                     <i class="bi bi-cart-plus me-1"></i>Додати в корзину
                                 </button>
                                 <a href="@Url.Action("Index","Book", new { id = item.Id })" class="btn btn-primary btn-sm details-btn">Деталі</a>
@@ -33,32 +33,3 @@
         </div>
     }
 </div>
-
-@section Scripts {
-    <script>
-        // Перевизначаємо updateCart для сторінки пошуку
-        function updateCart(bookId) {
-            $.ajax({
-                url: '/Order/AddItem',
-                type: 'POST',
-                data: { id: bookId },
-                success: function (response) {
-                    if (response.success) {
-                        updateCartStatus(response);
-                        updateCartRow(bookId, response);
-                        // Додаємо анімацію "дьоргання" для .cart-status
-                        $('.cart-status')
-                            .addClass('wiggle')
-                            .one('animationend', function () {
-                                $(this).removeClass('wiggle');
-                            });
-                        $('button.btn-add-to-cart[onclick="updateCart(' + bookId + ')"]').blur();
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.log('Помилка при додаванні: ' + error);
-                }
-            });
-        }
-    </script>
-}

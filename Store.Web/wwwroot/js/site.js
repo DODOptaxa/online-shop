@@ -11,8 +11,28 @@ function updateCart(bookId) {
             if (response.success) {
                 updateCartStatus(response);
                 updateCartRow(bookId, response);
-                $('button.btn-add-to-cart[onclick="updateCart(' + bookId + ')"]').blur();
-                $('button[onclick="updateCart(' + bookId + ')"]').blur();
+            }
+        },
+        error: function (xhr, status, error) {
+            console.log('Помилка при додаванні: ' + error);
+        }
+    });
+}
+
+function updateCartWiggle(bookId) {
+    $.ajax({
+        url: '/Order/AddItem',
+        type: 'POST',
+        data: { id: bookId },
+        success: function (response) {
+            if (response.success) {
+                updateCartStatus(response);
+                updateCartRow(bookId, response);
+                $('.cart-status')
+                    .addClass('wiggle')
+                    .one('animationend', function () {
+                        $(this).removeClass('wiggle');
+                    });
             }
         },
         error: function (xhr, status, error) {
@@ -57,7 +77,6 @@ function removeItems(bookId) {
     });
 }
 
-// Оновлення статусу кошика в шаблоні
 function updateCartStatus(response) {
     var cartStatus = $('.cart-status');
     if (response.totalCount > 0) {
@@ -71,9 +90,8 @@ function updateCartStatus(response) {
     }
 }
 
-// Оновлення рядка на сторінці кошика
 function updateCartRow(bookId, response) {
-    if ($('.item-count-' + bookId).length) { // Якщо ми на сторінці кошика
+    if ($('.item-count-' + bookId).length) { 
         if (response.itemCount > 0) {
             $('.item-count-' + bookId).text(response.itemCount);
         } else {
