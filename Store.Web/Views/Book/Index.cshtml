@@ -12,7 +12,7 @@
                     <p class="card-text"><strong>Автор:</strong> @Model.Author</p>
                     <p class="card-text text-muted">@Model.Description</p>
                     <p class="card-text"><strong>Ціна:</strong> <span class="text-success fw-bold">@Model.Price.ToString("C")</span></p>
-                    <button onclick="updateCart(@Model.Id)" class="btn btn-success btn-custom w-100">
+                    <button onclick="updateCartWiggle(@Model.Id)" class="btn btn-success btn-custom w-100 btn-add-to-cart">
                             <i class="bi bi-cart-plus me-2"></i>Додати в корзину
                 </div>
             </div>

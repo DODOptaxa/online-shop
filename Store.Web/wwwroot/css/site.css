@@ -445,3 +445,28 @@ form + form {
 .main-content {
     padding-top: 70px; /* Висота navbar приблизно 56px + відступ */
 }
+.cart-status.wiggle {
+    animation: wiggle 0.3s ease-in-out;
+}
+
+@keyframes wiggle {
+    0% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-10px);
+    }
+
+    50% {
+        transform: translateX(5px);
+    }
+
+    75% {
+        transform: translateX(-5px);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
