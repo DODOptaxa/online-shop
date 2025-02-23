@@ -1,56 +1,64 @@
 ﻿@model IEnumerable<Store.Book>
-
 @{
-    ViewData["Title"] = "Результаты поиска";
+    ViewData["Title"] = "Результати пошуку";
 }
 
-@if (Model.Count() == 0)
-{
-    <h1>Ничо не найдено лол</h1>
-}
-else
-{
-    <h1>Index</h1>
-
-    <p>
-        <a asp-action="Create">Create New</a>
-    </p>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Id)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Title)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Price)
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
+<div class="container py-5">
+    @if (Model.Count() == 0)
+    {
+        <h1 class="text-center text-muted">Нічого не знайдено 😅</h1>
+    }
+    else
+    {
+        <h1 class="mb-4 fw-bold text-dark">Результати пошуку</h1>
+        <div class="row">
             @foreach (var item in Model)
             {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Id)
-                    </td>
-                    <td>
-                         @Html.DisplayFor(modelItem => item.Title)
-                    </td>
-                    <td>
-                        @item.Price.ToString("C")
-                    </td>
-                    <td>
-                        @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                        <a asp-controller="book" asp-action="index" asp-route-id="@item.Id">Details</a>
-                        @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-                    </td>
-                </tr>
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">@item.Title</h5>
+                            <p class="card-text">ID: @item.Id</p>
+                            <p class="card-text"><strong>Ціна:</strong> @item.Price.ToString("C")</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <button onclick="updateCart(@item.Id)" class="btn btn-success btn-sm btn-custom btn-add-to-cart">
+                                    <i class="bi bi-cart-plus me-1"></i>Додати в корзину
+                                </button>
+                                <a href="@Url.Action("Index","Book", new { id = item.Id })" class="btn btn-primary btn-sm details-btn">Деталі</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             }
-        </tbody>
-    </table>
-}
+        </div>
+    }
+</div>
 
+@section Scripts {
+    <script>
+        // Перевизначаємо updateCart для сторінки пошуку
+        function updateCart(bookId) {
+            $.ajax({
+                url: '/Order/AddItem',
+                type: 'POST',
+                data: { id: bookId },
+                success: function (response) {
+                    if (response.success) {
+                        updateCartStatus(response);
+                        updateCartRow(bookId, response);
+                        // Додаємо анімацію "дьоргання" для .cart-status
+                        $('.cart-status')
+                            .addClass('wiggle')
+                            .one('animationend', function () {
+                                $(this).removeClass('wiggle');
+                            });
+                        $('button.btn-add-to-cart[onclick="updateCart(' + bookId + ')"]').blur();
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.log('Помилка при додаванні: ' + error);
+                }
+            });
+        }
+    </script>
+}

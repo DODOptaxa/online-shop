@@ -1,7 +1,21 @@
-﻿@{
-    ViewData["Title"] = "Робокасса";
+﻿@using Store.Contractors.RoboKassa.Areas.RoboKassa.Models
+@model TransactionViewModel
+@{
+    ViewData["Title"] = "Оплата успішна";
 }
-<h1>ОПЛАТА ПРОШЛА УСПЕШНО (наверное, хз)</h1>
-<p>
-    <a href="@Url.Action("Finish", "Order")">Вернутся в магазин</a>.
-</p>
+
+<div class="container py-5">
+    <div class="payment-container">
+        <h2 class="payment-title">Оплата успішна</h2>
+        <div class="success-message">
+            <p>Ваше замовлення успішно оплачено!</p>
+            <p><strong>Номер транзакції:</strong> TRX-123456789</p>
+            <p><strong>Сума:</strong> @Model.TransactionNumber грн </p>
+            <p><strong>Дата:</strong> 22 лютого 2025, 14:30</p>
+            <p><strong>Спосіб оплати:</strong> Visa/Mastercard</p>
+        </div>
+        <p>
+            <a href="@Url.Action("Finish", "Order", new { area = "" })" class="return-shop-btn">На головну</a>
+        </p>
+    </div>
+</div>

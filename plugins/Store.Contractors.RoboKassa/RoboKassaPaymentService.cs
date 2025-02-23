@@ -13,7 +13,7 @@ namespace Store.Contractors.RoboKassa
 
         public string Title => "Оплата картой";
 
-        public string GetUri => "/RoboKassa/";
+        public string GetUri => "RoboKassa";
 
         public Form CreateForm(int orderId)
         {

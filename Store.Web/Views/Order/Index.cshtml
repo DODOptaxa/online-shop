@@ -1,100 +1,68 @@
 ﻿@model OrderViewModel
-
 @{
-    ViewData["Title"] = "Корзина";
+    ViewData["Title"] = "Кошик";
 }
 
-<h1>Корзина</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th></th>
-            <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            <th>
-                Название
-            </th>
-            <th>
-                Автор
-            </th>
-            <th>
-                Кол-во
-            </th>
-            <th>
-                Цена (1 шт.)
-            </th>
-            
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model.Items) {
-        <tr>
-            <td>
-                    <form asp-action="RemoveItems" asp-route-id="@item.BookId" method="post" style="display: inline;">
-                        <button type="submit" class="rounded-circle text-secondary btn-minus-link" style="font-size: 24px;">&minus;</button>
-                    </form>
-
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.BookId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Author)
-            </td>
-            <td>
-                <div class="d-flex align-items-center">
-                    <form asp-action="RemoveItem" asp-controller="Order" method="post" class="d-inline">
-                        <input type="hidden" name="id" value="@item.BookId" />
-                        <button type="submit" class="btn btn-sm btn-outline-secondary ms-2">-</button>
-                    </form>
-                    <span class="mx-2">@item.Count</span>
-                    <form asp-action="AddItem" asp-controller="Order" method="post" class="d-inline">
-                        <input type="hidden" name="id" value="@item.BookId" />
-                        <button type="submit" class="btn btn-sm btn-outline-secondary me-2">+</button>
-                    </form>
-                </div>
-            </td>
-            <td>
-                @item.Price.ToString("C")
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
-<div class="d-flex justify-content-end mt-3">
-    <div class="border rounded p-3" style="width: 300px;">
-        <strong>
-            <div class="d-flex">
-                <span class="flex-grow-1">Общее Кол-во:</span>
-                <span class="text-end">@Model.TotalCount</span>
-            </div>
-            <div class="d-flex">
-                <span class="flex-grow-1">Общая Цена:</span>
-                <span class="text-end">@Model.TotalPrice.ToString("C")</span>
-            </div>
-        </strong>
-    </div>
-</div>
-<form action="@Url.Action("SendConfirmationCode")" method="post">
-    <input type="hidden" name="id" value="@Model.Id" />
-    <div class="form-group">
-        <label for="cellPhone">Номер телефона</label>
-        <div class="phone-input-wrapper">
-            <div class="phone-input-prefix">+380</div>
-            <input type="text" class="phone-input-field" name="cellPhone" value="" placeholder="00-000-0000" />
+<div class="container py-5">
+    <h1 class="mb-4 fw-bold text-dark">Кошик</h1>
+    <div class="card card-no-animation mb-4">
+        <div class="card-body">
+            <table class="table">
+                <thead class="table-dark">
+                    <tr>
+                        <th scope="col" style="width: 40px;"></th>
+                        <th scope="col">@Html.DisplayNameFor(model => model.Id)</th>
+                        <th scope="col">Назва</th>
+                        <th scope="col">Автор</th>
+                        <th scope="col" style="width: 150px;">Кількість</th>
+                        <th scope="col">Ціна (1 шт.)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Items)
+                    {
+                        <tr data-book-id="@item.BookId">
+                            <td>
+                                <button onclick="removeItems(@item.BookId)" class="btn btn-danger btn-sm rounded-circle btn-minus-link">−</button>
+                            </td>
+                            <td>@item.BookId</td>
+                            <td>@item.Title</td>
+                            <td>@item.Author</td>
+                            <td>
+                                <div class="d-flex align-items-center justify-content-between" style="width: 120px;">
+                                    <button onclick="removeItem(@item.BookId)" class="btn btn-cart btn-cart-minus">-</button>
+                                    <span class="fw-bold item-count-@item.BookId" style="min-width: 40px; text-align: center;">@item.Count</span>
+                                    <button onclick="updateCart(@item.BookId)" class="btn btn-cart btn-cart-plus">+</button>
+                                </div>
+                            </td>
+                            <td>@item.Price.ToString("C")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         </div>
-        @if (Model.Errors.ContainsKey("cellPhone"))
-        {
-            <small class="form-text text-danger">@Model.Errors["cellPhone"]</small>
-        }
     </div>
-    <button type="submit" class="btn btn-success mt-3">Отправить код</button>
-</form>
+    <div class="d-flex justify-content-end mb-4">
+        <div class="card card-no-animation p-3" style="width: 300px;">
+            <strong>
+                <div class="d-flex"><span class="flex-grow-1">Загальна кількість:</span><span class="total-count">@Model.TotalCount</span></div>
+                <div class="d-flex"><span class="flex-grow-1">Загальна ціна:</span><span class="total-price">@Model.TotalPrice.ToString("C")</span></div>
+            </strong>
+        </div>
+    </div>
+    <form action="@Url.Action("SendConfirmationCode")" method="post" class="card card-no-animation p-4">
+        <input type="hidden" name="id" value="@Model.Id" />
+        <div class="mb-3">
+            <label for="cellPhone" class="form-label">Номер телефону</label>
+            <div class="input-group" style="max-width: 300px;">
+                <span class="input-group-text phone-input-prefix">+380</span>
+                <input type="text" class="form-control phone-input-field" name="cellPhone" placeholder="00-000-0000" />
+            </div>
+            @if (Model.Errors.ContainsKey("cellPhone"))
+            {
+                <small class="error-text text-danger fw-bold fs-5 d-block mt-2">@Model.Errors["cellPhone"]</small>
+            }
+        </div>
+        <button type="submit" class="btn btn-success w-100">Відправити код</button>
+    </form>
+</div>
