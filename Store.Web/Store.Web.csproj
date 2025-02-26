@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Application\Store.Web.App\Store.Web.App.csproj" />
     <ProjectReference Include="..\domain\Store\Store.csproj" />
     <ProjectReference Include="..\plugins\Store.Contractors.RoboKassa\Store.Contractors.RoboKassa.csproj" />
   </ItemGroup>
