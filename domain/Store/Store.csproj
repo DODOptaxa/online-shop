@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Application\Store.Web.App\Store.Web.App.csproj" />
+  </ItemGroup>
+
 </Project>
