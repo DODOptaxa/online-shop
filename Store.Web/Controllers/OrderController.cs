@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Store.Memory;
 using Store.Contractors;
 using Store.Messages;
 using Store.Web.Models;
@@ -116,7 +115,7 @@ namespace Store.Web.Controllers
             var item = order.Items.FirstOrDefault(i => i.BookId == id);
             if (item == null) return Json(new { success = false });
 
-            order.RemoveItems(id); // Припускаю, що це видаляє весь товар
+            order.RemoveItems(id); 
             SaveOrderAndCart(order, cart);
 
             var updatedItem = order.Items.FirstOrDefault(i => i.BookId == id);
@@ -247,7 +246,6 @@ namespace Store.Web.Controllers
                 order.Delivery = deliveryService.CreateDelivery(deliveryForm);
                 _orderRepository.Update(order);
                 var webContractorService = _webContracts.SingleOrDefault(service => service.Code == paymentCode);
-                string path = "";
                 if (webContractorService != null)
                 {
                     return RedirectToAction("Index", "Home", new { area = webContractorService.GetUri, totalPrice = order.TotalPrice - order.Delivery.Amount });
