@@ -2,7 +2,6 @@
 using Store;
 using Store.Contractors;
 using Store.Contractors.RoboKassa;
-using Store.Memory;
 using Store.Messages;
 using Store.Web.Contractors;
 
@@ -20,8 +19,6 @@ builder.Services.AddSession
         options.Cookie.IsEssential = true;
     }
     );
-builder.Services.AddSingleton<IBookRepository, BookRepository>();
-builder.Services.AddSingleton<IOrderRepository, OrderRepository>();
 builder.Services.AddSingleton<BookService>();
 builder.Services.AddSingleton<IDeliveryService, NovaPoshtaPostmateDeliveryService>();
 builder.Services.AddSingleton<INotificationService, DebugNotificationService>();

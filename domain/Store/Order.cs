@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Store.Data;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -9,19 +10,81 @@ namespace Store
 {
     public class Order
     {
-        public int Id { get; }
+        //------------------------------------
 
-        private List<OrderItem> _items;
-
-        public string CellPhone { get; set; }
-
-        public OrderDelivery Delivery { get; set; }
-
-        public OrderPayment Payment { get; set; }
-        public IReadOnlyCollection<OrderItem> Items
+        public Order(OrderDto dto)
         {
-            get { return _items; }
+            this.dto = dto;
+            Items = new OrderItemCollection(dto);
         }
+
+        //------------------------------------
+
+        private readonly OrderDto dto;
+        public int Id => dto.Id;
+
+        public string CellPhone 
+        { 
+            get => dto.CellPhone;
+            set 
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                    throw new ArgumentException(nameof(CellPhone));
+
+                dto.CellPhone = value;
+            }
+        }
+
+        public OrderDelivery Delivery 
+        {
+            get
+            {
+                if (dto.DeliveryCode == null)
+                    return null;
+
+                return new OrderDelivery(
+                    dto.DeliveryCode,
+                    dto.DeliveryDescription,
+                    dto.DeliveryAmount,
+                    dto.DeliveryParameters);
+            }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentException(nameof(Delivery));
+
+                dto.DeliveryCode = value.UniqueCode;
+                dto.DeliveryDescription = value.Description;
+                dto.DeliveryAmount = value.Amount;
+                dto.DeliveryParameters = value.Parameters.
+                                                ToDictionary(p => p.Key, p => p.Value);
+            }
+        }
+
+        public OrderPayment Payment
+        {
+            get
+            {
+                if (dto.PaymentCode == null)
+                    return null;
+
+                return new OrderPayment(
+                    dto.PaymentCode,
+                    dto.PaymentDescription,
+                    dto.PaymentParameters);
+            }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentException(nameof(Payment));
+
+                dto.PaymentCode = value.UniqueCode;
+                dto.PaymentDescription = value.Description;
+                dto.PaymentParameters = value.Parameters
+                                             .ToDictionary(p => p.Key, p => p.Value);
+            }
+        }
+        public OrderItemCollection Items { get; }
 
         public uint TotalCount
         {
@@ -30,65 +93,19 @@ namespace Store
 
         public decimal TotalPrice
         {
-            get { return _items.Sum(item => item.Price * item.Count) + (Delivery?.Amount ?? 0); }
+            get { return Items.Sum(item => item.Price * item.Count) + (Delivery?.Amount ?? 0); }
         }
 
-        //------------------------------------
-
-        public Order(int id, IEnumerable<OrderItem> items)
+        public static class DtoFactory
         {
-            if (items == null)
-            {
-                throw new ArgumentNullException(nameof(items));
-            }
-            Id = id;
-            _items = new List<OrderItem>(items);
+            public static OrderDto Create() => new OrderDto();
         }
 
-        //------------------------------------
-
-
-        public void RemoveItem(int bookId)
+        public static class Mapper
         {
-            int index = _items.FindIndex(item => item.BookId == bookId);
-            if (index == -1)
-                throw new InvalidOperationException("Order does not contain specified item." + bookId);
-            if (_items[index].Count - 1 <= 0)
-                _items.RemoveAt(index);
+            public static Order Map(OrderDto dto) => new Order(dto);
 
-            else _items[index].Count -= 1;
-        }
-
-        public void RemoveItems(int bookId)
-        {
-            int index = _items.FindIndex(item => item.BookId == bookId);
-            if (index == -1)
-                throw new InvalidOperationException("Order does not contain specified item." + bookId);
-            _items.RemoveAll(x => x.BookId == bookId);
-        }
-
-
-        public void AddItem(Book book)
-        {
-            if (book == null)
-            {
-                throw new ArgumentNullException(nameof (book));
-            }
-
-            int index = _items.FindIndex(item => item.BookId == book.Id);
-            if (index == -1)
-                _items.Add(new OrderItem(book.Id, 1, book.Price));
-            else
-                _items[index].Count += 1;
-        }
-
-        public OrderItem GetItem(int bookId)
-        {
-            int index = _items.FindIndex(item => item.BookId == bookId);
-            if (index == -1)
-                throw new InvalidOperationException("Book not found: " + bookId);
-
-            return _items[index];
+            public static OrderDto Map(Order domain) => domain.dto;
         }
     }
 }

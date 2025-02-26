@@ -12,7 +12,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\domain\Store\Store.csproj" />
-    <ProjectReference Include="..\Infrastructure\Store.Memory\Store.Memory.csproj" />
     <ProjectReference Include="..\plugins\Store.Contractors.RoboKassa\Store.Contractors.RoboKassa.csproj" />
   </ItemGroup>
 
