@@ -9,7 +9,7 @@ using Store.Web.App;
 
 namespace Store.Web.Controllers
 {
-    public class OrderController : Controller
+/*    public class OrderController : Controller
     {
         private readonly IBookRepository _bookRepository;
         private readonly IOrderRepository _orderRepository;
@@ -37,7 +37,7 @@ namespace Store.Web.Controllers
             var books = _bookRepository.GetAllByIds(booksIds);
             var itemModels = from item in order.Items
                              join book in books on item.BookId equals book.Id
-                             select new OrderItemViewModel
+                             select new OrderModel
                              { 
                                  BookId = book.Id,
                                  Title = book.Title,
@@ -76,7 +76,7 @@ namespace Store.Web.Controllers
             var book = _bookRepository.GetById(id);
             if (book == null) return Json(new { success = false });
 
-            order.AddItem(book);
+            //order.AddItem(book);
             SaveOrderAndCart(order, cart);
 
             var item = order.Items.FirstOrDefault(i => i.BookId == id);
@@ -96,7 +96,7 @@ namespace Store.Web.Controllers
             var item = order.Items.FirstOrDefault(i => i.BookId == id);
             if (item == null) return Json(new { success = false });
 
-            order.RemoveBook(id); // Припускаю, що це зменшує кількість на 1
+            //order.RemoveBook(id); // Припускаю, що це зменшує кількість на 1
             SaveOrderAndCart(order, cart);
 
             var updatedItem = order.Items.FirstOrDefault(i => i.BookId == id);
@@ -116,7 +116,7 @@ namespace Store.Web.Controllers
             var item = order.Items.FirstOrDefault(i => i.BookId == id);
             if (item == null) return Json(new { success = false });
 
-            order.RemoveItems(id); 
+            //order.RemoveItems(id); 
             SaveOrderAndCart(order, cart);
 
             var updatedItem = order.Items.FirstOrDefault(i => i.BookId == id);
@@ -302,5 +302,6 @@ namespace Store.Web.Controllers
         }
 
         
-    }
+    }*/
 }
+

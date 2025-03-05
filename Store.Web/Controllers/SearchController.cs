@@ -13,8 +13,8 @@ namespace Store.Web.Controllers
         public IActionResult Index(string query)
         {
             if (query == null) query = " ";
-            IEnumerable<Book> books = bookService.GetByQuery(query);
-            return View(books);
+            //IEnumerable<Book> books = bookService.GetByQuery(query);
+            return View();
         }
     }
 }
