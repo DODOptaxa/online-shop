@@ -22,11 +22,7 @@ namespace Store.Data.EF
 
         public DbSet<OrderItemDto> OrderItems { get; set; }
 
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=Store;Integrated Security=true;TrustServerCertificate=true");
-        }
+        public StoreDbContext() { }
         public StoreDbContext(DbContextOptions<StoreDbContext> options)
             : base(options)
         {
@@ -383,6 +379,8 @@ namespace Store.Data.EF
                     options => { options.UseSqlServer(connectionString); },
                     ServiceLifetime.Transient
                 );
+            services.AddScoped<Dictionary<Type, StoreDbContext>>();
+            services.AddSingleton<StoreDbContextFactory>();
             services.AddSingleton<IBookRepository, BookRepository>();
             services.AddSingleton<IOrderRepository, OrderRepository>();
 

@@ -12,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession
     (options =>
@@ -23,7 +23,9 @@ builder.Services.AddSession
     }
     );
 
+//--- Регистрируем репозитории, бдшку и фабрику ----
 builder.Services.AddEfRepositories(builder.Configuration.GetConnectionString("Store"));
+
 builder.Services.AddSingleton<IDeliveryService, NovaPoshtaPostmateDeliveryService>();
 builder.Services.AddSingleton<INotificationService, DebugNotificationService>();
 builder.Services.AddSingleton<IPaymentService, CashPaymentService>();
