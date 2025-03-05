@@ -6,8 +6,15 @@ using System.Threading.Tasks;
 
 namespace Store.Data.EF
 {
-    internal class OrderRepository : IOrderRepository
+    
+    public class OrderRepository : IOrderRepository
     {
+        StoreDbContextFactory contextFactory;
+
+        public OrderRepository(StoreDbContextFactory contextFactory)
+        {
+            this.contextFactory = contextFactory;
+        }
         public Order Create()
         {
             throw new NotImplementedException();

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
-/*namespace Store.Data.EF
+namespace Store.Data.EF
 {
     public class StoreDbContextFactory : IDesignTimeDbContextFactory<StoreDbContext>
     {
@@ -21,4 +21,3 @@ using Microsoft.EntityFrameworkCore.Design;
         }
     }
 }
-*/

@@ -3,11 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Store;
 
 namespace Store.Data.EF
 {
-    internal class BookRepository : IBookRepository
+    public class BookRepository : IBookRepository
     {
+        StoreDbContextFactory contextFactory;
+
+        public BookRepository(StoreDbContextFactory contextFactory)
+        {
+            this.contextFactory = contextFactory;
+        }
         public IEnumerable<Book> GetAllByIds(IEnumerable<int> bookIds)
         {
             throw new NotImplementedException();
