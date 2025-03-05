@@ -1,49 +1,40 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Store.Web.Models;
-using System.IO;
-using System.Text;
+using System.Text.Json;
 
-namespace Store.Web
+
+
+namespace Store.Web.App
 {
     public static class SessionExtensions
     {
-        private const string key = "Cart";
-
-        public static void RemoveCart(this ISession session)
-        {
-            session.Remove(key);
-        }
+        private const string Key = "Cart";
 
         public static void Set(this ISession session, Cart value)
         {
             if (value == null)
                 return;
 
-            using (var stream = new MemoryStream())
-            using (var writer = new BinaryWriter(stream, Encoding.UTF8, true))
-            {
-                writer.Write(value.OrderId);
-                writer.Write(value.TotalCount);
-                writer.Write(value.TotalPrice);
+            // Серіалізуємо об'єкт `Cart` в JSON
+            var jsonData = JsonSerializer.Serialize(value);
 
-                session.Set(key, stream.ToArray());
-            }
+            // Зберігаємо JSON в сесії
+            session.SetString(Key, jsonData);
         }
 
+        public static void RemoveCart(this ISession session)
+        {
+            session.Remove(Key);
+        }
         public static bool TryGetCart(this ISession session, out Cart value)
         {
-            if (session.TryGetValue(key, out byte[] buffer))
-            {
-                using (var stream = new MemoryStream(buffer))
-                using (var reader = new BinaryReader(stream, Encoding.UTF8, true))
-                {
-                    var orderId = reader.ReadInt32();
-                    var totalCount = reader.ReadInt32();
-                    var totalPrice = reader.ReadDecimal();
+            // Отримуємо JSON-рядок з сесії
+            var jsonData = session.GetString(Key);
 
-                    value = new Cart(orderId, totalCount, totalPrice);
-                    return true;
-                }
+            if (!string.IsNullOrEmpty(jsonData))
+            {
+                // Десеріалізуємо JSON назад в об'єкт `Cart`
+                value = JsonSerializer.Deserialize<Cart>(jsonData);
+                return true;
             }
 
             value = null;

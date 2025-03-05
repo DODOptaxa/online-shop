@@ -8,7 +8,7 @@ namespace Store
 {
     public interface IBookRepository
     {
-        IEnumerable<Book> GetAllByISBN(string title);
+        IEnumerable<Book> GetAllByIsbn(string title);
         IEnumerable<Book> GetAllByTitleOrAuthor(string title);
 
         Book GetById(int id);

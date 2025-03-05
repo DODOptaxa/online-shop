@@ -5,6 +5,7 @@ using Store.Web.Models;
 using System.Text.RegularExpressions;
 using Store.Web.Contractors;
 using System.Globalization;
+using Store.Web.App;
 
 namespace Store.Web.Controllers
 {
@@ -30,7 +31,7 @@ namespace Store.Web.Controllers
             _webContracts = webContracts;
         }
 
-        private OrderViewModel Map(Order order)
+        private OrderModel Map(Order order)
         {
             var booksIds = order.Items.Select(item => item.BookId);
             var books = _bookRepository.GetAllByIds(booksIds);
@@ -44,7 +45,7 @@ namespace Store.Web.Controllers
                                  Count = item.Count,
                                  Price = item.Price,
                              };
-            return new OrderViewModel
+            return new OrderModel
             {
                 Id = order.Id,
                 Items = itemModels.ToArray(),
@@ -59,7 +60,7 @@ namespace Store.Web.Controllers
             if (HttpContext.Session.TryGetCart(out Cart cart))
             {
                 var order = _orderRepository.GetById(cart.OrderId);
-                OrderViewModel model = Map(order);
+                OrderModel model = Map(order);
 
                 return View(model);
             }
@@ -95,7 +96,7 @@ namespace Store.Web.Controllers
             var item = order.Items.FirstOrDefault(i => i.BookId == id);
             if (item == null) return Json(new { success = false });
 
-            order.RemoveItem(id); // Припускаю, що це зменшує кількість на 1
+            order.RemoveBook(id); // Припускаю, що це зменшує кількість на 1
             SaveOrderAndCart(order, cart);
 
             var updatedItem = order.Items.FirstOrDefault(i => i.BookId == id);

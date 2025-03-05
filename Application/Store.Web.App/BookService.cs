@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Store;
 
-namespace Store
+namespace Store.Web.App
 {
     public class BookService
     {
