@@ -1,9 +1,12 @@
-
+using Microsoft.EntityFrameworkCore;
 using Store;
 using Store.Contractors;
 using Store.Contractors.RoboKassa;
+using Store.Data.EF;
 using Store.Messages;
 using Store.Web.Contractors;
+using Store.Data.EF;
+using Store.Web.App;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,12 +22,15 @@ builder.Services.AddSession
         options.Cookie.IsEssential = true;
     }
     );
-builder.Services.AddSingleton<BookService>();
+
+builder.Services.AddEfRepositories(builder.Configuration.GetConnectionString("Store"));
 builder.Services.AddSingleton<IDeliveryService, NovaPoshtaPostmateDeliveryService>();
 builder.Services.AddSingleton<INotificationService, DebugNotificationService>();
 builder.Services.AddSingleton<IPaymentService, CashPaymentService>();
 builder.Services.AddSingleton<IPaymentService, RoboKassaPaymentService>();
 builder.Services.AddSingleton<IWebContractorService, RoboKassaPaymentService>();
+builder.Services.AddSingleton<BookService>();
+builder.Services.AddSingleton<OrderService>();
 
 var app = builder.Build();
 
