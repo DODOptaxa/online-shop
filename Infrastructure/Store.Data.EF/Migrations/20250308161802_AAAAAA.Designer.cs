@@ -11,8 +11,8 @@ using Store.Data.EF;
 namespace Store.Data.EF.Migrations
 {
     [DbContext(typeof(StoreDbContext))]
-    [Migration("20250305095920_FullCharsSearch")]
-    partial class FullCharsSearch
+    [Migration("20250308161802_AAAAAA")]
+    partial class AAAAAA
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

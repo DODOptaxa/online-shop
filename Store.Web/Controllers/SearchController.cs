@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Store.Web.App;
 
 namespace Store.Web.Controllers
 {
@@ -12,9 +13,9 @@ namespace Store.Web.Controllers
         }
         public IActionResult Index(string query)
         {
-            if (query == null) query = " ";
-            //IEnumerable<Book> books = bookService.GetByQuery(query);
-            return View();
+            if (query == null) query = "";
+            var books = bookService.GetAllByQuery(query);
+            return View(books);
         }
     }
 }

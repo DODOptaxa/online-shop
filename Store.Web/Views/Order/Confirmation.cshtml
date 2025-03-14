@@ -1,41 +1,34 @@
-﻿@model ConfirmationViewModel
+﻿@using Store.Web.App;
+@model OrderViewModel
 @{
     ViewData["Title"] = "Підтвердження номера";
 }
 
 <div class="container py-5">
-    <h1 class="mb-4 fw-bold text-dark">Підтвердження номера</h1>
+    <h1 class="mb-4 fw-bold ">Підтвердження номера</h1>
     <div class="row justify-content-center">
         <div class="col-md-6">
-            <form action="@Url.Action("Confirmate")" method="post" class="card p-4 shadow-sm">
-                <input type="hidden" name="id" value="@Model.OrderId" />
-                <input type="hidden" name="cellPhone" value="@Model.CellPhone" />
+            <div class="card p-4 shadow-sm" style="height:250px">
                 <div class="mb-3">
                     <label for="code" class="form-label">Код підтвердження</label>
                     <input type="text" class="form-control code" name="code" placeholder="0000" maxlength="4" />
-                    @if (Model.Errors.ContainsKey("code"))
-                    {
-                        <small class="text-danger">@Model.Errors["code"]</small>
-                    }
+                    <small class="confirmate-phone-error error-text text-danger fw-bold fs-5 d-block mt-2"></small>
                 </div>
-                <button type="submit" class="btn btn-success btn-custom w-100">Перевірити</button>
-            </form>
-            <form action="@Url.Action("SendConfirmationCode")" method="post" class="card p-4 shadow-sm mt-4">
-                <input type="hidden" name="id" value="@Model.OrderId" />
+                <button onclick="fetchConfirmateCellPhoneErrors('@Model.CellPhone', document.querySelector('input[name=code]').value)" class="btn btn-success btn-custom w-100">Перевірити</button>
+            </div>
+            <div class="card p-4 shadow-sm" style="height:250px">
                 <div class="mb-3">
                     <label for="cellPhone" class="form-label">Змінити номер</label>
                     <div class="input-group">
-                        <span class="input-group-text phone-input-prefix">+380</span>
-                        <input type="text" class="form-control phone-input-field" name="cellPhone" value="@Model.CellPhone" placeholder="00-000-0000" />
+                        <span class="input-group-text phone-input-prefix">| +38 |</span>
+                        <input type="text" class="form-control phone-input-field" name="cellPhone" value="@Model.CellPhone" placeholder="000-000-0000" />
                     </div>
-                    @if (Model.Errors.ContainsKey("cellPhone"))
-                    {
-                        <small class="text-danger">@Model.Errors["cellPhone"]</small>
-                    }
+                <small class="phone-error error-text text-danger fw-bold fs-5 d-block mt-2"></small>
+                <small class="phone-success error-text text-success fw-bold fs-5 d-block mt-2"></small>
                 </div>
-                <input type="hidden" name="reset" value="true" />
-                <button type="submit" class="btn btn-outline-success btn-custom w-100">Відправити код повторно</button>
-            </form>
+                <button onclick="fetchCellPhoneErrors(document.querySelector('input[name=cellPhone]').value)" 
+                class="btn btn-outline-success btn-custom w-100">Відправити код повторно</button>
+            </div>
         </div>
     </div>
 </div>

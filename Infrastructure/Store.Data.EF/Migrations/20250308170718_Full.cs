@@ -5,7 +5,7 @@
 namespace Store.Data.EF.Migrations
 {
     /// <inheritdoc />
-    public partial class LOL : Migration
+    public partial class Full : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

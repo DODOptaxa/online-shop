@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -325,33 +326,25 @@ namespace Store.Data.EF
                     .HasMaxLength(20);
 
                 action.Property(dto => dto.DeliveryCode)
-                    .HasMaxLength(40)
-                    .IsRequired();
-
-                action.Property(dto => dto.DeliveryDescription)
-                    .HasMaxLength(50);
+                    .HasMaxLength(40);
 
                 action.Property(dto => dto.DeliveryAmount)
-                    .HasColumnType("money")
-                    .IsRequired();
+                    .HasColumnType("money");
 
                 action.Property(dto => dto.PaymentCode)
-                    .HasMaxLength(10)
-                    .IsRequired();
-
-                action.Property(dto => dto.PaymentDescription)
-                    .HasMaxLength(50)
-                    .IsRequired();
+                    .HasMaxLength(10);
 
                 action.Property(dto => dto.DeliveryParameters)
-                    .HasConversion(
-                        value => JsonConvert.SerializeObject(value),
-                        value => JsonConvert.DeserializeObject<Dictionary<string, string>>(value));
+                      .HasConversion(
+                          value => JsonConvert.SerializeObject(value),
+                          value => JsonConvert.DeserializeObject<Dictionary<string, string>>(value))
+                      .Metadata.SetValueComparer(DictionaryComparer);
 
                 action.Property(dto => dto.PaymentParameters)
-                    .HasConversion(
-                        v => JsonConvert.SerializeObject(v),
-                        v => JsonConvert.DeserializeObject<Dictionary<string, string>>(v));
+                      .HasConversion(
+                          value => JsonConvert.SerializeObject(value),
+                          value => JsonConvert.DeserializeObject<Dictionary<string, string>>(value))
+                      .Metadata.SetValueComparer(DictionaryComparer);
             });
 
             modelBuilder.Entity<OrderItemDto>(action =>
@@ -368,6 +361,13 @@ namespace Store.Data.EF
                     .IsRequired();
             });
         }
+        private static readonly ValueComparer DictionaryComparer =
+        new ValueComparer<Dictionary<string, string>>(
+        (dictionary1, dictionary2) => dictionary1.SequenceEqual(dictionary2),
+        dictionary => dictionary.Aggregate(
+            0,
+            (a, p) => HashCode.Combine(HashCode.Combine(a, p.Key.GetHashCode()), p.Value.GetHashCode())
+        ));
     }
 
     public static class ServiceCollectionExtensions

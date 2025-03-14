@@ -95,8 +95,6 @@ namespace Store.Tests
         {
             var dto = new OrderDto();
             var order = new Order(dto);
-            order.Items.Add(1, 3m, 10 );
-            order.Items.Add(2, 30m, 2);
 
             Assert.Equal(90m, order.TotalPrice);
         }

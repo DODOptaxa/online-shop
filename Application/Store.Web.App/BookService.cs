@@ -14,14 +14,14 @@ namespace Store.Web.App
             this.bookRepository = bookRepository;
         }
 
-        public BookModel GetById(int id)
+        public BookViewModel GetById(int id)
         {
             var book = bookRepository.GetById(id);
 
             return Map(book);
         }
 
-        public IReadOnlyCollection<BookModel> GetAllByQuery(string query)
+        public IReadOnlyCollection<BookViewModel> GetAllByQuery(string query)
         {
             var books = Book.IsIsbn(query)
                       ? bookRepository.GetAllByIsbn(query)
@@ -31,9 +31,9 @@ namespace Store.Web.App
                         .ToArray();
         }
 
-        private BookModel Map(Book book)
+        private BookViewModel Map(Book book)
         {
-            return new BookModel
+            return new BookViewModel
             {
                 Id = book.Id,
                 Isbn = book.Isbn,

@@ -1,12 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Store.Web.App
 {
-    public class OrderModel
+    public class OrderViewModel
     {
         public int Id { get; set; }
 
-        public OrderItemModel[] Items { get; set; } = new OrderItemModel[0];
+        public OrderItemViewModel[] Items { get; set; } = new OrderItemViewModel[0];
 
         public uint TotalCount { get; set; }
 
@@ -19,5 +21,6 @@ namespace Store.Web.App
         public string PaymentDescription { get; set; }
 
         public Dictionary<string, string> Errors { get; set; } = new Dictionary<string, string>();
+
     }
 }

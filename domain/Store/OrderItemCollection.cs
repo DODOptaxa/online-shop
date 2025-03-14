@@ -63,19 +63,19 @@ namespace Store
             return index != -1 ? true : false;
         }
 
-        public void Add(int bookId, decimal price, uint count)
+        public void Add(int bookId, decimal price)
         {
             if (TryFind(bookId, out int index)) 
             {
                 items[index].Count += 1;
-                orderDto.Items[index].Count += 1;
-            }                
+            }
+            else { 
+                var orderItemDto = OrderItem.DtoFactory.Create(orderDto, bookId, price, 1);
+                orderDto.Items.Add(orderItemDto);
 
-            var orderItemDto = OrderItem.DtoFactory.Create(orderDto, bookId, price, count);
-            orderDto.Items.Add(orderItemDto);
-
-            var orderItem = OrderItem.Mapper.Map(orderItemDto);
-            items.Add(orderItem);
+                var orderItem = OrderItem.Mapper.Map(orderItemDto);
+                items.Add(orderItem);
+            }
 
         }
 
@@ -92,7 +92,6 @@ namespace Store
             else
             {
                 items[index].Count -= 1;
-                orderDto.Items[index].Count -= 1;
             }
         }
 
@@ -100,7 +99,7 @@ namespace Store
         {
             if (!TryFind(bookId, out int index))
                 throw new InvalidOperationException("Order does not contain specified item." + bookId);
-            items.RemoveAll(x => x.BookId == bookId);
+            items.RemoveAt(index);
             orderDto.Items.RemoveAt(index);
         }
 

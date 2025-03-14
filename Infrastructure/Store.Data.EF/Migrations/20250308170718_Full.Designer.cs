@@ -11,8 +11,8 @@ using Store.Data.EF;
 namespace Store.Data.EF.Migrations
 {
     [DbContext(typeof(StoreDbContext))]
-    [Migration("20250305145757_MMM")]
-    partial class MMM
+    [Migration("20250308170718_Full")]
+    partial class Full
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
