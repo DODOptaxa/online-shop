@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Store.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,19 +9,54 @@ namespace Store
 {
     public class OrderItem
     {
-        public int BookId { get; }
+        private readonly OrderItemDto dto;
+        public int BookId => dto.BookId;
 
-        public uint Count { get; set; }
-
-        public decimal Price { get; }
-
-        public OrderItem(int bookId, uint count, decimal price)
+        public uint Count 
         {
+            get { return dto.Count; }
+            set
+            {
+                dto.Count = value;
+            } 
+        }
 
-            BookId = bookId;
-            Count = count;
-            Price = price;
+        public decimal Price 
+        {
+            get { return dto.Price; }
+            set
+            {
+                dto.Price = value;
+            }
+        }
 
+        internal OrderItem(OrderItemDto dto)
+        {
+            this.dto = dto;
+        }
+
+        public static class DtoFactory
+        {
+            public static OrderItemDto Create(OrderDto order, int bookId, decimal price, uint count)
+            {
+                if (order == null)
+                    throw new ArgumentNullException(nameof(order));
+
+                return new OrderItemDto
+                {
+                    BookId = bookId,
+                    Price = price,
+                    Count = count,
+                    Order = order,
+                };
+            }
+        }
+
+        public static class Mapper
+        {
+            public static OrderItem Map(OrderItemDto dto) => new OrderItem(dto);
+
+            public static OrderItemDto Map(OrderItem domain) => domain.dto;
         }
     }
 }

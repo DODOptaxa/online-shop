@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using Store.Web.App;
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="utf-8" />
@@ -8,31 +9,49 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/Store.Web.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/theme.js"></script>
 
+    <script>
+        (function () {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        })();
+    </script>
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow">
-            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="index">"Книжный магазин" на c#</a>
-            <form class=" form-inline my-2 my-lg-0" action="@Url.Action("Index", "Search")" method="get">
-                <input class="form-control mr-sm-2 type="search" name="query" placeholder="Название или автор" />
+        <nav class="navbar navbar-expand-sm navbar-light border-bottom box-shadow fixed-top" style="background-color: var(--navbar-bg);">
+            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="index"><h3>"Книжна крамниця" на C#</h3></a>
+            <form class="form-inline my-2 my-lg-0" action="@Url.Action("Index", "Search")" method="get">
+                <input class="form-control mr-sm-2" type="search" name="query" placeholder="Назва або автор" />
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">śukacz</button>
             </form>
-            <span class="navbar-text ms-lg-auto me-4">
+            <div class="navbar-nav d-flex align-items-center">
+                <button id="theme-toggle" class="toggle-btn btn btn-outline-secondary btn-sm">Темна тема</button>
+            </div>
+
+            <div class="cart-status ms-lg-auto me-4">
                 @{
                     if (Context.Session.TryGetCart(out Cart cart) && cart.TotalCount != 0)
                     {
-                        <a href="@Url.Action("Index", "Order")"><strong>В корзине @cart.TotalCount товаров, на сумму @cart.TotalPrice.ToString("C")</strong></a>
+                        <a href="@Url.Action("Index", "Order")" class="text-white text-decoration-none">
+                            <strong>У кошику @cart.TotalCount товарів на суму @cart.TotalPrice.ToString("C")</strong>
+                        </a>
                     }
                     else
                     {
-                        <strong>Корзина пуста</strong>
+                        <strong>Кошик порожній</strong>
                     }
                 }
-            </span>
+            </div>
         </nav>
     </header>
-    <div class="container">
+    <div class="container main-content">
         <main>
             @RenderBody()
         </main>
@@ -40,12 +59,9 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2024 - Store.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            © 2024 - Store.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

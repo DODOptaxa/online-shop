@@ -1,7 +1,9 @@
-﻿using Store.Web.Models;
+﻿using Microsoft.AspNetCore.Http;
 using System.Text.Json;
 
-namespace Store.Web
+
+
+namespace Store.Web.App
 {
     public static class SessionExtensions
     {
@@ -19,6 +21,10 @@ namespace Store.Web
             session.SetString(Key, jsonData);
         }
 
+        public static void RemoveCart(this ISession session)
+        {
+            session.Remove(Key);
+        }
         public static bool TryGetCart(this ISession session, out Cart value)
         {
             // Отримуємо JSON-рядок з сесії

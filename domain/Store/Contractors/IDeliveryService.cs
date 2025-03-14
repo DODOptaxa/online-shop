@@ -16,5 +16,7 @@ namespace Store.Contractors
 
         Form CreateUpdatedForm(int orderId, IReadOnlyDictionary<string, string> values);
 
+        OrderDelivery CreateDelivery(Form form);
+
     }
 }

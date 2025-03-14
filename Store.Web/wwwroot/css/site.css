@@ -1,118 +1,778 @@
+/* Визначаємо перемінні для світлої теми за замовчуванням */
 html {
-  font-size: 14px;
+    background-color: var(--background-color);
+    font-size: 14px;
+    position: relative;
+    min-height: 100%;
+}
+:root {
+    --background-color: #f8f9fa;
+    --text-color: #343a40;
+    --card-bg: #ffffff;
+    --card-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    --btn-success-bg: #28a745;
+    --btn-success-hover: #218838;
+    --btn-primary-bg: #007bff;
+    --btn-primary-hover: #0056b3;
+    --btn-border-hover: #258cfb;
+    --table-header-bg: #333;
+    --table-odd-bg: #f7f7f7;
+    --table-even-bg: #eaeaea;
+    --input-bg: #ffffff;
+    --input-border: #ced4da;
+    --muted-text: #6c757d;
+    --navbar-bg: #ffffff;
+    --navbar-border: #e5e5e5;
+    --footer-bg: #f8f9fa;
+    --footer-text: #6c757d;
+    --payment-bg: #ffffff;
+    --method-btn-bg: #f8f9fa;
+    --success-border: #28a745;
+    --disabled-input-bg: #e9ecef;
+    --input-group-text-bg: #e9ecef;
+    --card-accent: #f7f7f7;
+    --input-text: #212529;
+    --btn-danger-bg: #dc3545;
+    --btn-danger-hover: #c82333;
+    --h1-color: #000000;
+}
+
+/* Темна тема */
+[data-theme="dark"] {
+    --background-color: #1a1a1a;
+    --text-color: #e0e0e0;
+    --card-bg: #2c2c2c;
+    --card-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+    --btn-success-bg: #2ea44f;
+    --btn-success-hover: #3eb75f;
+    --btn-primary-bg: #0d6efd;
+    --btn-primary-hover: #3d8bfd;
+    --btn-border-hover: #4dabf7;
+    --table-header-bg: #3a3a3a;
+    --table-odd-bg: #262626;
+    --table-even-bg: #2a2a2a;
+    --input-bg: #333;
+    --input-border: #555;
+    --muted-text: #a0a0a0;
+    --navbar-bg: #222222;
+    --navbar-border: #444;
+    --footer-bg: #1a1a1a;
+    --footer-text: #a0a0a0;
+    --payment-bg: #2c2c2c;
+    --method-btn-bg: #333333;
+    --success-border: #2ea44f;
+    --disabled-input-bg: #383838;
+    --input-group-text-bg: #383838;
+    --card-accent: #333333;
+    --input-text: #e0e0e0;
+    --btn-danger-bg: #e74c3c;
+    --btn-danger-hover: #ff6b6b;
+    --h1-color: #FFD700;
+}
+
+/* Базові стилі */
+html {
+    font-size: 14px;
+    position: relative;
+    min-height: 100%;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+    html {
+        font-size: 16px;
+    }
 }
 
 body {
-  margin-bottom: 60px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    margin-bottom: 60px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Забезпечує, що body займає як мінімум повну висоту вікна */
+}
+
+/* Основний контент, що розтягується */
+.main-content {
+    flex: 1;
+    padding-top: 70px; /* Висота navbar приблизно 56px + відступ */
+}
+
+/* Стилі для футера */
+footer {
+    margin-top: auto; /* Важливо для прикріплення футера внизу */
+    background-color: var(--footer-bg);
+    color: var(--footer-text);
+    padding: 1rem 0;
+}
+.amount-row {
+    color: var(--h1-color);
+}
+h1, h2, h3 {
+    color: var(--h1-color);
+}
+h4, h5, h6 {
+    color: var(--text-color);
+}
+
+/* Фокус для кнопок і полів */
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem var(--btn-border-hover);
+}
+
+/* Навігація */
+nav.navbar {
+    padding: 0.8rem 1rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 nav .form-inline {
     display: flex;
-    align-items: center; /* ����������� �� �������� */
+    align-items: center;
+    margin: 0 15px;
 }
-nav .navbar-brand{
-    padding-left: 20px; /* ³����� ��� ������� �񳺿 ����� */
+
+nav .navbar-brand {
+    padding-left: 20px;
+    color: var(--text-color);
+    transition: color 0.3s ease;
 }
-span .navbar-text{
+
+.navbar-text {
     padding-right: 20px;
 }
-table.table thead th {
-    background-color: #333; /* �����-���� ��� */
-    color: white !important; /* ����� ����� */
+
+nav .form-control {
+    margin-right: 0.5rem;
+    border-radius: 20px;
+    transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
 }
 
-/* ����� ������� */
-table.table tbody tr:nth-child(odd) {
-    background-color: #f7f7f7; /* �����-���� ��� ��� �������� ����� */
+/* Кнопки */
+.btn-custom {
+    padding: 10px 20px;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    overflow: hidden; /* Запобігає виходу кнопки за межі при трансформації */
 }
 
-table.table tbody tr:nth-child(even) {
-    background-color: #eaeaea; /* ������� ���� ��� ��� ������ ����� */
+    .btn-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-color: var(--btn-border-hover);
+    }
+
+    .btn-custom:active {
+        transform: scale(1.05); /* Зменшили масштаб для запобігання виходу за межі */
+        transition: transform 0.1s ease;
+    }
+
+        .btn-custom:focus,
+        .btn-custom:active,
+        .btn-custom:active:focus {
+            box-shadow: none;
+            outline: none;
+            background-color: inherit;
+            border-color: var(--btn-border-hover);
+        }
+
+.btn-add-to-cart {
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    background-color: var(--btn-success-bg);
+    color: #ffffff;
+    max-width: 100%; /* Обмеження ширини кнопки */
 }
 
-table.table tbody tr:hover {
-    background-color: #ddd; /* �����-���� ��� ��� ��������� */
-}
+    .btn-add-to-cart:hover {
+        border-color: var(--btn-border-hover);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        background-color: var(--btn-success-hover);
+        color: #ffffff;
+    }
 
-.big-cross {
-    font-size: 1.5rem; /* ��������� ����� */
-    font-weight: bold; /* ������ */
-}
-table.table tbody td{
-    vertical-align: middle
-}
+    .btn-add-to-cart:active {
+        transform: scale(1.05); /* Зменшили масштаб для запобігання виходу за межі */
+        transition: transform 0.1s ease;
+        background-color: var(--btn-success-hover);
+        color: #ffffff;
+        border-color: var(--btn-border-hover);
+    }
+
+        .btn-add-to-cart:focus,
+        .btn-add-to-cart:active,
+        .btn-add-to-cart:active:focus {
+            box-shadow: none;
+            outline: none;
+            border-color: var(--btn-border-hover);
+        }
+
+    .btn-add-to-cart:not(:active):not(:hover) {
+        background-color: var(--btn-success-bg);
+        border-color: transparent;
+        color: #ffffff;
+    }
+
 .btn-minus-link {
     display: inline-block;
     width: 32px;
     height: 32px;
-    line-height: 32px;
+    line-height: 28px;
     text-align: center;
     border-radius: 50%;
-    background-color: #343a40;
+    background-color: var(--btn-danger-bg);
     color: white !important;
     text-decoration: none;
+    transition: all 0.3s ease;
 }
 
     .btn-minus-link:hover {
-        background-color: #dc3545;
+        background-color: var(--btn-danger-hover);
+        color: white !important;
+        transform: translateY(-2px);
+    }
+
+/* Таблиці */
+.table {
+    transition: background-color 0.3s ease;
+}
+
+    .table thead th {
+        background-color: var(--table-header-bg);
         color: white !important;
     }
 
+    .table tbody tr {
+        transition: background-color 0.3s ease;
+    }
 
-.phone-input-wrapper {
-    display: flex;
-    align-items: center;
+        .table tbody tr:nth-child(odd) {
+            background-color: var(--table-odd-bg);
+        }
+
+        .table tbody tr:nth-child(even) {
+            background-color: var(--table-even-bg);
+        }
+
+    .table tbody td {
+        vertical-align: middle;
+        color: var(--text-color);
+        transition: color 0.3s ease;
+    }
+
+/* Форми */
+.form-select, .form-control {
+    border-radius: 8px;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+    background-color: var(--input-bg);
+    border-color: var(--input-border);
+    color: var(--input-text);
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+    .form-control:focus {
+        background-color: var(--input-bg);
+        border-color: var(--btn-primary-bg);
+        color: var(--input-text);
+    }
+
+.form-label {
+    font-weight: 500;
+    color: var(--text-color);
+    transition: color 0.3s ease;
+}
+
+.input-group-text {
+    background-color: var(--input-group-text-bg);
+    color: var(--text-color);
+    border-color: var(--input-border);
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
 .phone-input-prefix {
-    background-color: #f8f9fa;
-    border: 1px solid #ced4da;
+    background-color: var(--input-group-text-bg);
+    border: 1px solid var(--input-border);
     border-right: none;
     padding: 0.375rem 0.75rem;
     border-radius: 0.25rem 0 0 0.25rem;
     font-size: 1rem;
     line-height: 1.5;
-    color: #495057;
-    text-align: center;
+    color: var(--text-color);
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
 .phone-input-field {
-    width: 15% !important;
     flex-shrink: 0;
-    border: 1px solid #ced4da;
     border-radius: 0 0.25rem 0.25rem 0;
     padding: 0.375rem 0.75rem;
     font-size: 1rem;
     line-height: 1.5;
+    background-color: var(--input-bg);
+    border-color: var(--input-border);
+    color: var(--input-text);
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
 
-form + form {
-    margin-top: 20px; /* ����� ������ �� ������ �������� */
-}
-
+/* Поле для коду */
 .code {
-    width: 8%; /* ������ �� 100% */
-    border: 1px solid #ced4da; /* �� � ���� ����, �� � phone-input-field */
-    border-radius: 0.25rem; /* �� � ���� ������������ ���� */
-    padding: 0.375rem 0.75rem; /* ³������ ��������� ���� */
-    font-size: 1rem; /* ����� ������ */
-    line-height: 1.5; /* ������ ����� ��� ������� ����������� */
-    font-weight: bold; /* ������ ����� */
-    text-align: center; /* ����������� ������ */
-    letter-spacing: 8px; /* ³������ �� ��������� */
+    border: 1px solid var(--input-border);
+    border-radius: 0.25rem;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    font-weight: bold;
+    text-align: center;
+    letter-spacing: 8px;
+    background-color: var(--input-bg);
+    color: var(--input-text);
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+/* Картки */
+.card {
+    display: flex;
+    flex-direction: column;
+    height: 305px; /* Фіксована висота картки, налаштуйте за потреби */
+    border: none;
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
+    margin-bottom: 15px;
+    transition: transform 0.2s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-body {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    overflow: hidden;
+}
+
+.card-title {
+    color: var(--text-color);
+    font-weight: 750;
+    font-size: 1.25rem;
+    margin-bottom: 1.5rem;
+    height: 3.5rem; /* Фіксована висота для заголовка (приблизно 2 рядки) */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Обмеження до 2 рядків */
+    -webkit-box-orient: vertical;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.card-text {
+    color: var(--text-color);
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 0.5rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Обмеження до 2 рядків для кожного .card-text */
+    -webkit-box-orient: vertical;
+}
+
+.card-footer {
+    padding: 0.75rem 1rem;
+    padding-top: 0.305rem;
+    background-color: var(--card-accent);
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+    transition: background-color 0.3s ease;
+}
+
+.btn-custom, .details-btn {
+    padding: 8px 15px;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.details-btn {
+    background-color: var(--btn-primary-bg);
+    color: #ffffff;
+    border: 2px solid transparent;
+}
+
+    .details-btn:hover {
+        border-color: var(--btn-border-hover);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        background-color: var(--btn-primary-hover);
+        color: #ffffff;
+        transform: translateY(-2px);
+    }
+
+.card-no-animation {
+    transition: none;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+    .card-no-animation:hover {
+        transform: none;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+
+/* Додаткові стилі */
+form + form {
+    margin-top: 20px;
+}
+
+.error-text {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: var(--btn-danger-bg);
+    transition: color 0.3s ease;
+}
+
+.text-muted {
+    color: var(--muted-text) !important;
+    transition: color 0.3s ease;
+}
+
+.cart-status {
+    background-color: var(--table-header-bg);
+    color: #ffffff;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    display: inline-block;
+    transition: background-color 0.3s ease;
+}
+
+    .cart-status a {
+        color: #ffffff;
+        text-decoration: none;
+    }
+
+        .cart-status a:hover {
+            color: #ffffff;
+            text-decoration: underline;
+        }
+
+/* Базові стилі для кнопок кошика */
+.btn-cart {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    font-size: 1.2rem;
+    line-height: 32px;
+    text-align: center;
+    border-radius: 8px;
+    border: 2px solid var(--table-header-bg);
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+/* Стилі для кнопки "−" */
+.btn-cart-minus {
+    background-color: var(--btn-danger-bg);
+    border-color: var(--btn-danger-bg);
+    color: #ffffff;
+}
+
+    .btn-cart-minus:hover {
+        background-color: var(--card-bg);
+        border-color: var(--text-color);
+        color: var(--text-color);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+/* Стилі для кнопки "+" */
+.btn-cart-plus {
+    background-color: var(--btn-success-bg);
+    border-color: var(--btn-success-bg);
+    color: #ffffff;
+}
+
+    .btn-cart-plus:hover {
+        background-color: var(--card-bg);
+        border-color: var(--text-color);
+        color: var(--text-color);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+/* Прибираємо фокус після кліку */
+.btn-cart:focus,
+.btn-cart:active,
+.btn-cart:active:focus {
+    box-shadow: none;
+    outline: none;
+    background-color: inherit;
+    border-color: inherit;
+}
+
+.btn-cart:active {
+    transform: scale(0.95);
+    transition: transform 0.1s ease;
+}
+
+.btn-cart:not(:active):not(:hover) {
+    background-color: var(--card-bg);
+    border-color: var(--table-header-bg);
+    color: var(--text-color);
+}
+
+.btn-cart-minus:not(:active):not(:hover) {
+    background-color: var(--btn-danger-bg);
+    border-color: var(--btn-danger-bg);
+    color: #ffffff;
+}
+
+.btn-cart-plus:not(:active):not(:hover) {
+    background-color: var(--btn-success-bg);
+    border-color: var(--btn-success-bg);
+    color: #ffffff;
+}
+
+/* Стилі для сторінки оплати та успіху */
+.payment-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+
+.payment-title {
+    font-size: 1.5rem;
+    color: var(--text-color);
+    margin-bottom: 20px;
+    font-family: Arial, sans-serif;
+    transition: color 0.3s ease;
+}
+
+.payment-methods {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.method-btn {
+    padding: 10px 20px;
+    border: 1px solid var(--input-border);
+    border-radius: 5px;
+    background-color: var(--method-btn-bg);
+    color: var(--text-color);
+    cursor: default;
+    font-family: Arial, sans-serif;
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+    .method-btn.active {
+        background-color: var(--btn-primary-bg);
+        color: #fff;
+        border-color: var(--btn-primary-bg);
+    }
+
+.payment-form input[disabled] {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid var(--input-border);
+    border-radius: 5px;
+    font-size: 1rem;
+    font-family: Arial, sans-serif;
+    background-color: var(--disabled-input-bg);
+    color: var(--input-text);
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+.pay-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background-color: var(--btn-primary-bg);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1rem;
+    text-align: center;
+    text-decoration: none;
+    font-family: Arial, sans-serif;
+    transition: background-color 0.3s ease;
+}
+
+    .pay-btn:hover {
+        background-color: var(--btn-primary-hover);
+        color: #fff;
+    }
+
+/* Стилі для сторінки успіху */
+.success-container {
+    border: 2px solid var(--success-border);
+}
+
+.success-message {
+    margin-bottom: 30px;
+    font-family: Arial, sans-serif;
+    background-color: var(--method-btn-bg);
+    padding: 15px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.success-text {
+    margin: 10px 0;
+    color: var(--text-color);
+    font-size: 1.1rem;
+    line-height: 1.5;
+    transition: color 0.3s ease;
+}
+
+/* Стилі для кнопки "Вернутся в магазин" */
+.return-shop-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: var(--btn-success-bg);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    text-align: center;
+    text-decoration: none;
+    font-family: Arial, sans-serif;
+    transition: all 0.3s ease;
+}
+
+    .return-shop-btn:hover {
+        background-color: var(--btn-success-hover);
+        color: #fff;
+        transform: translateY(-2px);
+    }
+
+    .return-shop-btn:active {
+        transform: scale(0.95);
+        transition: transform 0.1s ease;
+    }
+
+    .return-shop-btn:focus {
+        outline: none;
+        box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.5);
+    }
+
+/* Стилі для перемикача теми */
+#theme-toggle {
+    transition: all 0.3s ease;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    padding: 6px 12px;
+    margin-left: 10px;
+}
+
+    #theme-toggle:hover {
+        background-color: var(--btn-primary-hover);
+        color: #ffffff;
+        border-color: var(--btn-border-hover);
+    }
+
+/* Анімація wiggle */
+.cart-status.wiggle {
+    animation: wiggle 0.3s ease-in-out;
+}
+
+@keyframes wiggle {
+    0% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-10px);
+    }
+
+    50% {
+        transform: translateX(5px);
+    }
+
+    75% {
+        transform: translateX(-5px);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
+/* Виправлення для Confirmation.cshtml */
+.shadow-sm {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: box-shadow 0.3s ease;
+}
+
+.toggle-btn{
+    color: var(--text-color)
+}
+/* Стилі для кнопок */
+.btn-outline-success {
+    color: var(--btn-success-bg);
+    border-color: var(--btn-success-bg);
+    transition: all 0.3s ease;
+}
+
+    .btn-outline-success:hover {
+        color: #fff;
+        background-color: var(--btn-success-hover);
+        border-color: var(--btn-success-hover);
+    }
+
+.btn-success {
+    background-color: var(--btn-success-bg);
+    border-color: var(--btn-success-bg);
+    color: white;
+    transition: all 0.3s ease;
+}
+
+    .btn-success:hover {
+        background-color: var(--btn-success-hover);
+        border-color: var(--btn-success-hover);
+        color: white;
+    }
+
+/* Виправлення для поганого відображення кольорів у формах */
+[data-theme="dark"] .form-control::placeholder {
+    color: #aaa;
+}
+
+/* Загальні покращення для доступності */
+a:hover {
+    text-decoration: none;
+}
+
+/* Виправлення для навігаційної панелі */
+@media (max-width: 767.98px) {
+    nav .form-inline {
+        margin: 10px 0;
+        width: 100%;
+    }
+
+        nav .form-inline .form-control {
+            width: 100%;
+            margin-right: 0;
+            margin-bottom: 0.5rem;
+        }
+
+    .cart-status {
+        margin-top: 10px;
+    }
+}
+
+/* Покращені переходи для всіх елементів */
+* {
+    transition-property: background-color, color, border-color, box-shadow, transform;
+    transition-duration: 0.3s;
+    transition-timing-function: ease;
 }

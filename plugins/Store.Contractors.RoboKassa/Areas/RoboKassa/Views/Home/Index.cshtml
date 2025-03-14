@@ -1,0 +1,24 @@
+﻿@using Store.Contractors.RoboKassa.Areas.RoboKassa.Models
+@model TransactionViewModel
+@{
+    ViewData["Title"] = "Оплата замовлення";
+}
+
+<div class="container py-5">
+    <div class="payment-container">
+        <h2 class="payment-title">Оплата замовлення</h2>
+        <div class="payment-methods">
+            <button class="method-btn active">Visa/Mastercard</button>
+            <button class="method-btn">QIWI</button>
+            <button class="method-btn">WebMoney</button>
+            <button class="method-btn">Яндекс.Деньги</button>
+        </div>
+        <div class="payment-form">
+            <input type="text" class="form-control" value="4111 1111 1111 1111" disabled>
+            <input type="text" class="form-control" value="12/25" disabled>
+            <input type="text" class="form-control" value="123" disabled>
+            <a href="/RoboKassa/Home/Callback?totalPrice=@Model.TransactionNumber" class="pay-btn">Сплатити</a>
+        </div>
+    </div>
+</div>
+

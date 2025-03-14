@@ -1,14 +1,26 @@
 ﻿@model Book
-
 @{
     ViewData["Title"] = Model.Title;
 }
 
-<h1>@Model.Title</h1>
-<p><strong>@Model.Author</strong></p>
-<p>@Model.Description</p>
-<p>Цена <strong>@(Model.Price.ToString("C"))</strong></p>
-<form action="@Url.Action("AddItem", "Order", new {inCart = false})" method = "post">
-    <input type="hidden" name="id" value="@Model.Id" />
-    <button class="btn btn-success" type="submit" >В корзину</button>
-</form>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h1 class="card-title fw-bold mb-3">@Model.Title</h1>
+                    <p class="card-text"><strong>Автор:</strong> @Model.Author</p>
+                    <p class="card-text text-muted">@Model.Description</p>
+                    <p class="card-text"><strong>Ціна:</strong> <span class="text-success fw-bold">@Model.Price.ToString("C")</span></p>
+                </div>
+                <div class="card-footer p-0">
+                    <div class="d-flex justify-content-center align-items-center p-3">
+                        <button onclick="updateCartWiggle(@Model.Id)" class="btn btn-success btn-custom w-100 btn-add-to-cart">
+                            <i class="bi bi-cart-plus me-2"></i>Додати в корзину
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

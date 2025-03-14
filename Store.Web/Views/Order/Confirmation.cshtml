@@ -1,36 +1,34 @@
-﻿@model ConfirmationViewModel
+﻿@using Store.Web.App;
+@model OrderViewModel
 @{
-    ViewData["Title"] = "Подтверждение мобильного";
+    ViewData["Title"] = "Підтвердження номера";
 }
-<h1>Подтверждение мобильного</h1>
-<form action="@Url.Action("Confirmate")" method="post">
-    <input type="hidden" name="id" value="@Model.OrderId" />
-    <input type="hidden" name="cellPhone" value="@Model.CellPhone" />
-    <div class="form-group">
-        <label for="code">Код потдверждения</label>
-        <div class="phone-input-wrapper">
-            <input type="text" class="code" name="code" placeholder="0000" maxlength="4" />
+
+<div class="container py-5">
+    <h1 class="mb-4 fw-bold ">Підтвердження номера</h1>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card p-4 shadow-sm" style="height:250px">
+                <div class="mb-3">
+                    <label for="code" class="form-label">Код підтвердження</label>
+                    <input type="text" class="form-control code" name="code" placeholder="0000" maxlength="4" />
+                    <small class="confirmate-phone-error error-text text-danger fw-bold fs-5 d-block mt-2"></small>
+                </div>
+                <button onclick="fetchConfirmateCellPhoneErrors('@Model.CellPhone', document.querySelector('input[name=code]').value)" class="btn btn-success btn-custom w-100">Перевірити</button>
+            </div>
+            <div class="card p-4 shadow-sm" style="height:250px">
+                <div class="mb-3">
+                    <label for="cellPhone" class="form-label">Змінити номер</label>
+                    <div class="input-group">
+                        <span class="input-group-text phone-input-prefix">| +38 |</span>
+                        <input type="text" class="form-control phone-input-field" name="cellPhone" value="@Model.CellPhone" placeholder="000-000-0000" />
+                    </div>
+                <small class="phone-error error-text text-danger fw-bold fs-5 d-block mt-2"></small>
+                <small class="phone-success error-text text-success fw-bold fs-5 d-block mt-2"></small>
+                </div>
+                <button onclick="fetchCellPhoneErrors(document.querySelector('input[name=cellPhone]').value)" 
+                class="btn btn-outline-success btn-custom w-100">Відправити код повторно</button>
+            </div>
         </div>
-            @if (Model.Errors.ContainsKey("code"))
-            {
-                <small class="form-text text-danger">@Model.Errors["code"]</small>
-            }
     </div>
-    <button type="submit" class="btn btn-success mt-3">Проверить</button>
-</form>
-<form action="@Url.Action("SendConfirmationCode")" method="post">
-    <input type="hidden" name="id" value="@Model.OrderId" />
-    <div class="form-group">
-        <label for="cellPhone">Изменить номер</label>
-        <div class="phone-input-wrapper">
-            <div class="phone-input-prefix">+380</div>
-            <input type="text" class="phone-input-field" name="cellPhone" value="@Model.CellPhone" placeholder="00-000-0000" />
-        </div>
-        @if (Model.Errors.ContainsKey("cellPhone"))
-        {
-            <small class="form-text text-danger">@Model.Errors["cellPhone"]</small>
-        }
-    </div>
-    <input type="hidden" name="reset" value="true" />
-    <button type="submit" class="btn btn-success mt-3">Отправить код повторно</button>
-</form>
+</div>

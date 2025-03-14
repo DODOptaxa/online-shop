@@ -1,0 +1,14 @@
+﻿@{
+    ViewData["Title"] = "Замовлення готове оформлен";
+}
+
+<div class="container py-5">
+    <div class="payment-container success-container">
+        <h2 class="payment-title">Замовлення оформлено!</h2>
+        <div class="success-message">
+            <p class="success-text">Ми збираємо ваше замовлення, щоб передати його в службу доставки.</p>
+            <p class="success-text">Очікуйте SMS із деталями.</p>
+        </div>
+        <a href="@Url.Action("Index", "Home", new { area = "" })" class="return-shop-btn">Повернутися в магазин</a>
+    </div>
+</div>

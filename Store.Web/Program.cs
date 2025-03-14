@@ -1,13 +1,18 @@
+using Microsoft.EntityFrameworkCore;
 using Store;
 using Store.Contractors;
-using Store.Memory;
+using Store.Contractors.RoboKassa;
+using Store.Data.EF;
 using Store.Messages;
+using Store.Web.Contractors;
+using Store.Data.EF;
+using Store.Web.App;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession
     (options =>
@@ -17,11 +22,17 @@ builder.Services.AddSession
         options.Cookie.IsEssential = true;
     }
     );
-builder.Services.AddSingleton<IBookRepository, BookRepository>();
-builder.Services.AddSingleton<IOrderRepository, OrderRepository>();
-builder.Services.AddSingleton<BookService>();
+
+//--- Регистрируем репозитории, бдшку и фабрику ----
+builder.Services.AddEfRepositories(builder.Configuration.GetConnectionString("Store"));
+
 builder.Services.AddSingleton<IDeliveryService, NovaPoshtaPostmateDeliveryService>();
 builder.Services.AddSingleton<INotificationService, DebugNotificationService>();
+builder.Services.AddSingleton<IPaymentService, CashPaymentService>();
+builder.Services.AddSingleton<IPaymentService, RoboKassaPaymentService>();
+builder.Services.AddSingleton<IWebContractorService, RoboKassaPaymentService>();
+builder.Services.AddSingleton<BookService>();
+builder.Services.AddSingleton<OrderService>();
 
 var app = builder.Build();
 
@@ -35,15 +46,21 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
+
 
 app.UseAuthorization();
 
 app.UseSession();
 
 app.MapControllerRoute(
+     name: "areas",
+     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
+
+app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
 
 app.Run();

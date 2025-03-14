@@ -2,7 +2,13 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Дарова</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">Кликни сюдо за документейшн</a>.</p>
+<div class="container text-center py-5">
+    <h1 class="display-4 fw-bold mb-4 animate__animated animate__fadeIn">Дарова</h1>
+    <p class="lead text-muted mb-4">
+        Ласкаво просимо до нашого магазину! Дізнайтесь більше про
+        <a href="https://learn.microsoft.com/aspnet/core" class="text-primary fw-semibold text-decoration-none">ASP.NET Core</a>.
+    </p>
+    <a href="@Url.Action("Index", "Search")" class="btn btn-primary btn-custom animate__animated animate__pulse animate__infinite">
+        Перейти до книг
+    </a>
 </div>
