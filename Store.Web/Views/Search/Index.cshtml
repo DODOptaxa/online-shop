@@ -1,28 +1,31 @@
-﻿@model IEnumerable<Store.Book>
+﻿@using Store.Web.App;
+@model IReadOnlyCollection<BookViewModel>
 @{
     ViewData["Title"] = "Результати пошуку";
 }
 
 <div class="container py-5">
-    @if (Model.Count() == 0)
+    @if (Model == null || Model.Count() == 0)
     {
         <h1 class="text-center text-muted">Нічого не знайдено 😅</h1>
     }
     else
     {
-        <h1 class="mb-4 fw-bold text-dark">Результати пошуку</h1>
+        <h1 class="mb-4 fw-bold ">Результати пошуку</h1>
         <div class="row">
             @foreach (var item in Model)
             {
                 <div class="col-md-4 mb-4">
-                    <div class="card shadow-sm h-100">
-                        <div class="card-body">
+                    <div class="card shadow-sm h-100 d-flex flex-column">
+                        <div class="card-body flex-grow-1">
                             <h5 class="card-title">@item.Title</h5>
                             <p class="card-text">ID: @item.Id</p>
                             <p class="card-text"><strong>Ціна:</strong> @item.Price.ToString("C")</p>
+                        </div>
+                        <div class="card-footer bg-transparent border-0">
                             <div class="d-flex justify-content-between align-items-center">
                                 <button onclick="updateCartWiggle(@item.Id)" class="btn btn-success btn-sm btn-custom btn-add-to-cart">
-                                    <i class="bi bi-cart-plus me-1"></i>Додати в корзину
+                                    <i class="bi bi-cart-plus me-1"></i>Додати в кошик
                                 </button>
                                 <a href="@Url.Action("Index","Book", new { id = item.Id })" class="btn btn-primary btn-sm details-btn">Деталі</a>
                             </div>

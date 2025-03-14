@@ -6,207 +6,144 @@ using System.Text.RegularExpressions;
 using Store.Web.Contractors;
 using System.Globalization;
 using Store.Web.App;
+using Microsoft.IdentityModel.Tokens;
+using System.Text.Json;
+using NuGet.Protocol;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Store.Web.Controllers
 {
-/*    public class OrderController : Controller
+    public class OrderController : Controller
     {
-        private readonly IBookRepository _bookRepository;
-        private readonly IOrderRepository _orderRepository;
-        private readonly INotificationService _notificationService;
+        private readonly OrderService orderService;
         private readonly IEnumerable<IDeliveryService> _deliveryServices;
         private readonly IEnumerable<IPaymentService> _paymentServices;
         private readonly IEnumerable<IWebContractorService> _webContracts;
 
-        public OrderController(IBookRepository bookRepository, IOrderRepository orderRepository,
-                                INotificationService notificationService, IEnumerable<IDeliveryService> deliveryServices,
-                                IEnumerable<IPaymentService> paymentServices, IEnumerable<IWebContractorService> webContracts)
+        public OrderController(INotificationService notificationService, IEnumerable<IDeliveryService> deliveryServices,
+                                IEnumerable<IPaymentService> paymentServices, IEnumerable<IWebContractorService> webContracts,
+                                OrderService _orderService)
                                 
         {
-            _bookRepository = bookRepository;
-            _orderRepository = orderRepository;
-            _notificationService = notificationService;
+            orderService = _orderService;
             _deliveryServices = deliveryServices;
             _paymentServices = paymentServices;
             _webContracts = webContracts;
         }
 
-        private OrderModel Map(Order order)
-        {
-            var booksIds = order.Items.Select(item => item.BookId);
-            var books = _bookRepository.GetAllByIds(booksIds);
-            var itemModels = from item in order.Items
-                             join book in books on item.BookId equals book.Id
-                             select new OrderModel
-                             { 
-                                 BookId = book.Id,
-                                 Title = book.Title,
-                                 Author = book.Author,
-                                 Count = item.Count,
-                                 Price = item.Price,
-                             };
-            return new OrderModel
-            {
-                Id = order.Id,
-                Items = itemModels.ToArray(),
-                TotalCount = order.TotalCount,
-                TotalPrice = order.TotalPrice
-            };
-        }
-
         [HttpGet]
         public IActionResult Index()
         {
-            if (HttpContext.Session.TryGetCart(out Cart cart))
-            {
-                var order = _orderRepository.GetById(cart.OrderId);
-                OrderModel model = Map(order);
-
-                return View(model);
-            }
-
+            if (orderService.TryGetModel(out var Model))
+                { 
+                    return View(Model);
+                }
             return View("Empty");
         }
         [HttpPost]
         public IActionResult AddItem(int id)
         {
-            if (id < 0) return Json(new { success = false, message = "Ты чё сука, далбаёб блять? какой нахуй id " + id });
+            var order = orderService.AddBook(id);
 
-            (Order order, Cart cart) = GetOrCreateOrderAndCart();
-            var book = _bookRepository.GetById(id);
-            if (book == null) return Json(new { success = false });
-
-            //order.AddItem(book);
-            SaveOrderAndCart(order, cart);
-
-            var item = order.Items.FirstOrDefault(i => i.BookId == id);
             return Json(new
             {
                 success = true,
-                totalCount = cart.TotalCount,
-                totalPrice = cart.TotalPrice.ToString("C"),
-                itemCount = item?.Count ?? 0
+                totalCount = order.TotalCount,
+                totalPrice = order.TotalPrice.ToString("C"),
+                itemCount = order.Items.GetItem(id)?.Count ?? 0
             });
         }
 
         [HttpPost]
         public IActionResult RemoveItem(int id)
         {
-            (Order order, Cart cart) = GetOrCreateOrderAndCart();
-            var item = order.Items.FirstOrDefault(i => i.BookId == id);
-            if (item == null) return Json(new { success = false });
+            var order = orderService.RemoveBook(id);
 
-            //order.RemoveBook(id); // Припускаю, що це зменшує кількість на 1
-            SaveOrderAndCart(order, cart);
-
-            var updatedItem = order.Items.FirstOrDefault(i => i.BookId == id);
             return Json(new
             {
                 success = true,
-                totalCount = cart.TotalCount,
-                totalPrice = cart.TotalPrice.ToString("C"),
-                itemCount = updatedItem?.Count ?? 0
-            });
+                totalCount = order.TotalCount,
+                totalPrice = order.TotalPrice.ToString("C"),
+                itemCount = order.Items.GetItem(id)?.Count ?? 0
+        });
         }
 
         [HttpPost]
         public IActionResult RemoveItems(int id)
         {
-            (Order order, Cart cart) = GetOrCreateOrderAndCart();
-            var item = order.Items.FirstOrDefault(i => i.BookId == id);
-            if (item == null) return Json(new { success = false });
+            var order = orderService.RemoveBooks(id);
 
-            //order.RemoveItems(id); 
-            SaveOrderAndCart(order, cart);
-
-            var updatedItem = order.Items.FirstOrDefault(i => i.BookId == id);
             return Json(new
             {
                 success = true,
-                totalCount = cart.TotalCount,
-                totalPrice = cart.TotalPrice.ToString("C"),
-                itemCount = updatedItem?.Count ?? 0
+                totalCount = order.TotalCount,
+                totalPrice = order.TotalPrice.ToString("C"),
+                itemCount = 0
             });
         }
 
         [HttpPost]
-        public IActionResult SendConfirmationCode(int id, string cellPhone, bool reset=false)
+        public IActionResult SendConfirmationCode(string cellPhone)
         {
-            var order = _orderRepository.GetById(id);
-            if (order.TotalCount == 0) return View("Empty");
-            var model = Map(order);
-            if (!IsValidCellPhone(cellPhone))
+            Console.WriteLine(cellPhone);
+            var model = orderService.SendConfirmation(cellPhone);
+            if (model.Errors.Count > 0)
             {
-                model.Errors["cellPhone"] = "Номер телефону не відповідає формату +380-00-000-0000";
-                if (reset) return View("Confirmation", new ConfirmationViewModel { OrderId = id,
-                                        CellPhone = cellPhone, Errors = new Dictionary<string, string> {
-                                        { "cellPhone", "Номер телефону не відповідає формату +380-00-000-0000" }
-                                        }});
-                return View("Index", model);
+                return Json(new
+                {
+                    success = true,
+                    errors = model.Errors
+                }
+                );
             }
-            int code = 1111; // random.Next(1000, 10000)
-            HttpContext.Session.SetInt32(cellPhone, code);
-            _notificationService.SendConfirmationCode(cellPhone, code);
-            return View("Confirmation",
-                        new ConfirmationViewModel
-                        {
-                            OrderId = id,
-                            CellPhone = cellPhone
-                        });
+            else
+            {
+                Console.WriteLine(cellPhone);
+                return Json(new
+                {
+                    success = false,
+                    cell_phone = model.CellPhone
+                });
+            }
+        }
+
+        public IActionResult Confirmation(string cellPhone)
+        {
+            var acces = orderService.TryGetModel(out var model);
+            model.CellPhone = cellPhone;
+            return View(model);
         }
 
         [HttpPost]
-        public IActionResult Confirmate(int id, string cellPhone, int code)
+        public IActionResult Confirmate(string cellPhone, int code)
         {
-            int? storedCode = HttpContext.Session.GetInt32(cellPhone);
-            if (storedCode == null)
+            var model = orderService.ConfirmCellPhone(cellPhone, code);
+            if (model.Errors.Count != 0)
             {
-                return View("Confirmation",
-                            new ConfirmationViewModel
-                            {
-                                OrderId = id,
-                                CellPhone = cellPhone,
-                                Errors = new Dictionary<string, string>
-                                {
-                                    { "code", "Пустий код, повторіть відправку" }
-                                },
-                            }); ;
+                return Json(new
+                {
+                    success = true,
+                    errors = model.Errors
+                }
+                );
             }
-            if (storedCode != code)
+
+            else
             {
-                return View("Confirmation",
-                            new ConfirmationViewModel
-                            {
-                                OrderId = id,
-                                CellPhone = cellPhone,
-                                Errors = new Dictionary<string, string>
-                                {
-                                    { "code", "Відрізняється від відправленого" }
-                                },
-                            }); ;
+                return Json(new
+                {
+                    success = false,
+                });
             }
-            cellPhone = "+380" + cellPhone;
-
-            //todo : сохранить номер телефона
-
-            var order = _orderRepository.GetById(id);
-
-            order.CellPhone = cellPhone;
-
-            _orderRepository.Update(order);
-
-            HttpContext.Session.Remove(cellPhone);
-
-
-            return RedirectToAction("StartDelivery", new { id });
         }
 
 
-        public IActionResult StartDelivery(int id)
+        public IActionResult StartDelivery()
         {
+            Console.WriteLine("StartDelivery");
             var deliveryService = _deliveryServices.First();
             var paymentService = _paymentServices.First();
-            var order = _orderRepository.GetById(id);
+            var order = orderService.GetOrder();
             var deliveryForm = deliveryService.CreateForm(order.Id);
             var paymentForm = paymentService.CreateForm(order.Id);
             var model = new DeliveryDetailsViewModel
@@ -242,10 +179,9 @@ namespace Store.Web.Controllers
             Console.WriteLine(final);
             if (final)
             {
-                var order = _orderRepository.GetById(id);
-                order.Payment = paymentService.CreatePayment(paymentForm);
-                order.Delivery = deliveryService.CreateDelivery(deliveryForm);
-                _orderRepository.Update(order);
+                var order = orderService.GetOrder();
+                orderService.SetDelivery(deliveryService.CreateDelivery(deliveryForm));
+                orderService.SetPayment( paymentService.CreatePayment(paymentForm));
                 var webContractorService = _webContracts.SingleOrDefault(service => service.Code == paymentCode);
                 if (webContractorService != null)
                 {
@@ -260,48 +196,18 @@ namespace Store.Web.Controllers
 
         public IActionResult Finish()
         {
-            HttpContext.Session.RemoveCart();
             return View();
         }
 
-
-        private bool IsValidCellPhone(string cellPhone)
-        {
-            if (cellPhone == null)
-                return false;
-            cellPhone = cellPhone.Replace(" ", "")
-                                 .Replace("-", "");
-            string pattern = @"^(39|50|63|66|67|68|73|93|95|96|97|98|99)\d{7}$";
-            return Regex.IsMatch(cellPhone, pattern);
-        }
-
-        private void SaveOrderAndCart(Order order, Cart cart)
-        {
-            _orderRepository.Update(order);
-
-            cart.TotalCount = order.TotalCount;
-            cart.TotalPrice = order.TotalPrice;
-            HttpContext.Session.Set(cart);
-
-        }
-
-        private (Order order, Cart cart) GetOrCreateOrderAndCart()
-        {
-            Order order;
-            if (HttpContext.Session.TryGetCart(out Cart cart))
-            {
-                order = _orderRepository.GetById(cart.OrderId);
-            }
-            else
-            {
-                order = _orderRepository.Create();
-                cart = new Cart(order.Id);
-            }
-
-            return (order, cart);
-        }
-
         
-    }*/
+    }
+
+    static class ModelFeatures
+    {
+        public static OrderItemViewModel GetItem(this OrderItemViewModel[] model, int id)
+        {
+            return model.SingleOrDefault(item => item.BookId == id);
+        }
+    }
 }
 

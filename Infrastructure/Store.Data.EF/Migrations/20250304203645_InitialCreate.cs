@@ -35,7 +35,7 @@ namespace Store.Data.EF.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CellPhone = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    CellPhone = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
                     DeliveryCode = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
                     DeliveryDescription = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     DeliveryAmount = table.Column<decimal>(type: "money", nullable: false),

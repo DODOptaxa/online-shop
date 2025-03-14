@@ -23,7 +23,7 @@ namespace Store
         private readonly OrderDto dto;
         public int Id => dto.Id;
 
-        public string CellPhone 
+        public string? CellPhone 
         { 
             get => dto.CellPhone;
             set 

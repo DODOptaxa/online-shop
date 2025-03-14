@@ -40,9 +40,17 @@ namespace Store
         }
 
 
-        public string Description { get; }
+        public string Description
+        {
+            get => dto.Description;
+            set => dto.Description = value;
+        }
 
-        public decimal Price { get; }
+        public decimal Price
+        {
+            get => dto.Price;
+            set => dto.Price = value;
+        }
         internal Book(BookDto dto)
         {
             this.dto = dto;

@@ -1,6 +1,6 @@
 ﻿namespace Store.Web.App
 {
-    public class BookModel
+    public class BookViewModel
     {
         public int Id { get; set; }
 

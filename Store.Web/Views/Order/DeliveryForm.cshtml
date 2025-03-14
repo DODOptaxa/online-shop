@@ -4,13 +4,13 @@
 }
 
 <div class="container py-5">
-    <h1 class="mb-4 fw-bold text-dark">Параметри доставки</h1>
-    <form action="@Url.Action("UpdateDelivery")" method="post" id="deliveryForm" class="card p-4 shadow-sm">
+    <h1 class="mb-4 fw-bold">Параметри доставки</h1>
+    <form action="@Url.Action("UpdateDelivery")" method="post" id="deliveryForm" class="card p-4 shadow-sm" style="height:auto">
         <input type="hidden" name="id" value="@Model.OrderId" />
         <div class="row">
             <!-- Ліва колонка: Способи доставки -->
             <div class="col-md-6 mb-4">
-                <h3 class="mb-3 fw-bold text-dark">Доставка</h3>
+                <h3 class="mb-3 fw-bold">Доставка</h3>
                 <div class="mb-3">
                     <label for="deliveryCode" class="form-label">Спосіб доставки</label>
                     <select class="form-select" name="deliveryCode" onchange="document.getElementById('deliveryForm').submit();">
@@ -36,7 +36,7 @@
 
             <!-- Права колонка: Способи оплати -->
             <div class="col-md-6 mb-4">
-                <h3 class="mb-3 fw-bold text-dark">Оплата</h3>
+                <h3 class="mb-3 fw-bold">Оплата</h3>
                 <div class="mb-3">
                     <label for="paymentCode" class="form-label">Спосіб оплати</label>
                     <select class="form-select" name="paymentCode" onchange="document.getElementById('deliveryForm').submit();">

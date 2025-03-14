@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,25 +10,41 @@ namespace Store.Data.EF
     
     public class OrderRepository : IOrderRepository
     {
-        StoreDbContextFactory contextFactory;
+        StoreDbContextFactory dbContextFactory;
 
         public OrderRepository(StoreDbContextFactory contextFactory)
         {
-            this.contextFactory = contextFactory;
+            this.dbContextFactory = contextFactory;
         }
         public Order Create()
         {
-            throw new NotImplementedException();
+            var dbContext = dbContextFactory.Create(typeof(OrderRepository));
+
+            var dto = Order.DtoFactory.Create();
+            dbContext.Orders.Add(dto);
+            dbContext.SaveChanges();
+
+            return Order.Mapper.Map(dto);
         }
 
         public Order GetById(int id)
         {
-            throw new NotImplementedException();
+            var dbContext = dbContextFactory.Create(typeof(OrderRepository));
+
+            var dto = dbContext.Orders
+                               .Include(order => order.Items)
+                               .SingleOrDefault(order => order.Id == id);
+
+            if (dto == null) throw new InvalidDataException() ;
+
+            return Order.Mapper.Map(dto);
         }
 
         public void Update(Order order)
         {
-            throw new NotImplementedException();
+            var dbContext = dbContextFactory.Create(typeof(OrderRepository));
+
+            dbContext.SaveChanges();
         }
     }
 }

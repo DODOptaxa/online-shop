@@ -11,15 +11,30 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/theme.js"></script>
+
+    <script>
+        (function () {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        })();
+    </script>
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow fixed-top">
-            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="index">"Книжна крамниця" на C#</a>
+        <nav class="navbar navbar-expand-sm navbar-light border-bottom box-shadow fixed-top" style="background-color: var(--navbar-bg);">
+            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="index"><h3>"Книжна крамниця" на C#</h3></a>
             <form class="form-inline my-2 my-lg-0" action="@Url.Action("Index", "Search")" method="get">
                 <input class="form-control mr-sm-2" type="search" name="query" placeholder="Назва або автор" />
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">śukacz</button>
             </form>
+            <div class="navbar-nav d-flex align-items-center">
+                <button id="theme-toggle" class="toggle-btn btn btn-outline-secondary btn-sm">Темна тема</button>
+            </div>
+
             <div class="cart-status ms-lg-auto me-4">
                 @{
                     if (Context.Session.TryGetCart(out Cart cart) && cart.TotalCount != 0)
@@ -47,9 +62,6 @@
             © 2024 - Store.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
