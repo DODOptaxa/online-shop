@@ -34,7 +34,15 @@
             <div class="navbar-nav d-flex align-items-center">
                 <button id="theme-toggle" class="toggle-btn btn btn-outline-secondary btn-sm">Темна тема</button>
             </div>
-
+            @if (User.Identity.IsAuthenticated)
+            {
+                <a asp-area="Identity" asp-page="/Account/Logout" class="nav-link">Вихід</a>
+            }
+            else
+            {
+                <a asp-action="Register" asp-controller="Account" class="nav-link">Реєстрація</a>
+                <a asp-action="Login" asp-controller="Account" class="nav-link" >Вхід</a>
+            }
             <div class="cart-status ms-lg-auto me-4">
                 @{
                     if (Context.Session.TryGetCart(out Cart cart) && cart.TotalCount != 0)
