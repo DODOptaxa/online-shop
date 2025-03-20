@@ -280,6 +280,11 @@ nav .form-control {
         color: var(--input-text);
     }
 
+.control-label {
+    font-weight: 500;
+    color: var(--text-color);
+    transition: color 0.3s ease;
+}
 .form-label {
     font-weight: 500;
     color: var(--text-color);
