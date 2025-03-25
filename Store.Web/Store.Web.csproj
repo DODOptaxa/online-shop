@@ -6,21 +6,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Content Remove="wwwroot\js\theme.js" />
-  </ItemGroup>
 
   <ItemGroup>
-    <_ContentIncludedByDefault Remove="wwwroot\js\theme.js" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="wwwroot\js\theme.js" />
-  </ItemGroup>
-
-  <ItemGroup>
+	  <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.3.1" />
 	  <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.3" />
-	  <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.2">
       <PrivateAssets>all</PrivateAssets>
@@ -40,5 +29,6 @@
     <ProjectReference Include="..\Infrastructure\Store.Data.EF\Store.Data.EF.csproj" />
     <ProjectReference Include="..\plugins\Store.Contractors.RoboKassa\Store.Contractors.RoboKassa.csproj" />
   </ItemGroup>
+
 
 </Project>

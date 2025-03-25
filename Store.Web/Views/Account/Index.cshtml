@@ -1,0 +1,138 @@
+﻿@using Store.Web.Models
+@model ChangeProfileViewModel
+@{
+    ViewData["Title"] = "Дані аккаунту";
+}
+
+<div class="container py-5">
+    <h1 class="text-center mb-4">Зміна даних аккаунта</h1>
+
+    <div class="row">
+        <!-- Бічна панель -->
+        <div class="col-md-3">
+            <div class="card shadow-sm sidebar-panel">
+                <div class="card-header text-center">
+                    <h3 class="mb-0">Аккаунт</h3>
+                </div>
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item active">
+                            <a asp-controller="Account" asp-action="Index" class="sidebar-link active">Інформація</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a asp-controller="Account" asp-action="OrderHistory" class="sidebar-link">Історія замовлень</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Основний контент -->
+        <div class="col-md-9">
+            <!-- Перший блок (Зміна даних) -->
+            <div class="col-10 mx-auto mb-4">
+                <div class="card p-4 shadow-sm" style="max-width: 550px; height:auto;">
+                    <div class="row mb-3">
+                        <div class="col-4">
+                            <img src="~/images/user.png" class="img-fluid" alt="user" />
+                        </div>
+                    </div>
+                    <form asp-action="Change" asp-controller="Account" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger text-center"></div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="Name" class="control-label d-block text-center">Ім'я</label>
+                            <input asp-for="Name" class="form-control" />
+                            <span asp-validation-for="Name" class="text-danger d-block text-center"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="CurrentPassword" class="control-label d-block text-center">Поточний пароль</label>
+                            <input asp-for="CurrentPassword" class="form-control" type="password" />
+                            <span asp-validation-for="CurrentPassword" class="text-danger d-block text-center"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="NewPassword" class="control-label d-block text-center">Новий пароль</label>
+                            <input asp-for="NewPassword" class="form-control" type="password" />
+                            <span asp-validation-for="NewPassword" class="text-danger d-block text-center"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <button type="submit" class="btn btn-outline-success btn-custom w-100">Зберегти зміни</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Другий блок (Інші параметри) -->
+            <div class="col-10 mx-auto">
+                <div class="card p-4 shadow-sm" style="max-width: 550px; height:auto;">
+                    <h3 class="text-center mb-3">Інші параметри</h3>
+
+                    <div class="form-group mb-3" style="padding-left: 15px;">
+                        <div class="control-label d-block text-start">Номер телефону: @(Model.cellPhone != null ? Model.cellPhone : "відсутній")</div>
+                    </div>
+                    <form asp-action="Confirmate" asp-controller="Order" method="post">
+                        <input type="hidden" name="cellPhone" value="@Model.cellPhone" />
+                        <button type="submit" class="btn btn-outline-success btn-custom w-100">
+                            Змінити номер
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Горизонтальна риска внизу -->
+    <hr class="mt-5" style="border: 1px solid #ccc;" />
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+<style>
+    .sidebar-panel {
+        background-color: var(--card-bg);
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .sidebar-panel .card-header {
+        background-color: var(--card-accent);
+        border-bottom: 1px solid var(--input-border);
+        padding: 1rem;
+    }
+
+    .sidebar-panel .list-group-item {
+        background-color: var(--card-bg);
+        border: none;
+        padding: 0.75rem 1rem;
+    }
+
+    .sidebar-link {
+        color: var(--text-color);
+        text-decoration: none;
+        display: block;
+        transition: color 0.3s ease;
+    }
+
+    .sidebar-link:hover {
+        color: var(--btn-primary-bg);
+    }
+
+    .list-group-item.active {
+        background-color: var(--btn-primary-bg);
+    }
+
+    .list-group-item.active .sidebar-link {
+        color: #ffffff;
+    }
+
+    media (max-width: 767.98px) {
+        .sidebar-panel {
+            margin-bottom: 1.5rem;
+        }
+    }
+</style>

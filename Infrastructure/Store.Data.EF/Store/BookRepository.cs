@@ -7,7 +7,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Store;
 
-namespace Store.Data.EF
+namespace Store.Data.EF.Store
 {
     public class BookRepository : IBookRepository
     {
@@ -17,26 +17,26 @@ namespace Store.Data.EF
         {
             this.contextFactory = contextFactory;
         }
-        public IEnumerable<Book> GetAllByIds(IEnumerable<int> bookIds)
+        public async Task<IEnumerable<Book>> GetAllByIdsAsync(IEnumerable<int> bookIds)
         {
             var dbContext = contextFactory.Create(typeof(BookRepository));
 
-            var dtos = dbContext.Books
-                               .Where(book => bookIds.Contains(book.Id))
-                               .ToList();
+            var dtos = await dbContext.Books
+                                      .Where(book => bookIds.Contains(book.Id))
+                                      .ToListAsync();
 
             return dtos.Select(Book.Mapper.Map);
         }
 
-        public IEnumerable<Book> GetAllByIsbn(string title)
+        public async Task<IEnumerable<Book>> GetAllByIsbnAsync(string title)
         {
             var dbContext = contextFactory.Create(typeof(BookRepository));
 
             if (Book.TryFormatIsbn(title, out string formatIsbn))
             {
-                var dtos = dbContext.Books
-                    .Where(book => book.Isbn == title)
-                    .ToList();
+                var dtos = await dbContext.Books
+                                          .Where(book => book.Isbn == title)
+                                          .ToListAsync();
 
                 return dtos.Select(Book.Mapper.Map);
             }
@@ -44,32 +44,33 @@ namespace Store.Data.EF
             return Array.Empty<Book>();
         }
 
-        public IEnumerable<Book> GetAllByTitleOrAuthor(string titleOrAuthor)
+        public async Task<IEnumerable<Book>> GetAllByTitleOrAuthorAsync(string titleOrAuthor)
         {
             var dbContext = contextFactory.Create(typeof(BookRepository));
 
             if (string.IsNullOrWhiteSpace(titleOrAuthor))
             {
-                return new List<Book>(); 
+                return new List<Book>();
             }
+
             Console.WriteLine(titleOrAuthor);
             var parameter = new SqlParameter("@titleOrAuthor", titleOrAuthor);
             var sqlQuery = $"SELECT * FROM Books WHERE CONTAINS((Author, Title), '\"*{titleOrAuthor}*\"')";
             Console.WriteLine(sqlQuery);
 
-            var dtos = dbContext.Books
-            .FromSqlRaw(sqlQuery, parameter)
-            .ToArray();
+            var dtos = await dbContext.Books
+                                      .FromSqlRaw(sqlQuery, parameter)
+                                      .ToListAsync();
 
             return dtos.Select(Book.Mapper.Map).ToArray();
         }
 
-        public Book GetById(int id)
+        public async Task<Book> GetByIdAsync(int id)
         {
             var dbContext = contextFactory.Create(typeof(BookRepository));
 
-            var dto = dbContext.Books
-                               .SingleOrDefault(book => book.Id == id);
+            var dto = await dbContext.Books
+                                     .SingleOrDefaultAsync(book => book.Id == id);
 
             return Book.Mapper.Map(dto);
         }

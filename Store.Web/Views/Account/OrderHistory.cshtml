@@ -1,0 +1,190 @@
+﻿@using Store.Web.App;
+@model List<OrderViewModel>
+@{
+    ViewData["Title"] = "Історія замовлень";
+}
+
+<style>
+    .order-header {
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .order-details {
+        height: 0;
+        padding: 0;
+        margin: 0;
+        overflow: hidden;
+        border: none !important;
+        opacity: 0;
+        visibility: hidden;
+    }
+
+    .order-details.expanded {
+        height: auto;
+        padding: inherit;
+        margin: inherit;
+        overflow: inherit;
+        visibility: visible;
+        opacity: 1;
+    }
+</style>
+
+<div class="container py-5 main-content">
+    <h1 class="text-center mb-4">Історія замовлень</h1>
+
+    <div class="row">
+        <!-- Бічна панель -->
+        <div class="col-md-3">
+            <div class="card shadow-sm sidebar-panel">
+                <div class="card-header text-center">
+                    <h3 class="mb-0">Аккаунт</h3>
+                </div>
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <a asp-controller="Account" asp-action="Index" class="sidebar-link">Інформація</a>
+                        </li>
+                        <li class="list-group-item active">
+                            <a asp-controller="Account" asp-action="OrderHistory" class="sidebar-link active">Історія замовлень</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Основний контент -->
+        <div class="col-md-9">
+            @if (Model == null || !Model.Any())
+            {
+                <p class="text-center text-muted">У вас ще немає замовлень.</p>
+            }
+            else
+            {
+                <div class="row justify-content-center">
+                    <div class="col-12 col-lg-10">
+                        @foreach (var order in Model)
+                        {
+                            <div class="order-card mb-4 shadow-sm order-card">
+                                <div class="card-header order-header" data-order-id="@order.Id">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h5 class="mb-0">Замовлення #@order.Id</h5>
+                                        <div class="order-summary">
+                                            <span class="badge bg-success">
+                                                @order.TotalCount товар/ів на @order.TotalPrice.ToString("C")
+                                            </span>
+                                            <span class="toggle-icon ms-2">▼</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="order-details" data-order-id="@order.Id">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <h6>Товари:</h6>
+                                                <ul class="list-unstyled">
+                                                    @foreach (var item in order.Items)
+                                                    {
+                                                        <li class="mb-2">
+                                                            <strong>@item.Title</strong> (@item.Author) -
+                                                            @item.Count шт. × @item.Price.ToString("C") =
+                                                            <span class="fw-bold">@((item.Count * item.Price).ToString("C"))</span>
+                                                        </li>
+                                                    }
+                                                </ul>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <h6>Інформація про доставку та оплату:</h6>
+                                                <p><strong>Телефон:</strong> @(string.IsNullOrEmpty(order.CellPhone) ? "Не вказано" : order.CellPhone)</p>
+                                                <p><strong>Доставка:</strong> @order.DeliveryDescription</p>
+                                                <p><strong>Оплата:</strong> @order.PaymentDescription</p>
+                                            </div>
+                                        </div>
+
+                                        @if (order.Errors.Any())
+                                        {
+                                            <div class="mt-3">
+                                                <h6 class="text-danger">Помилки:</h6>
+                                                <ul class="list-unstyled text-danger">
+                                                    @foreach (var error in order.Errors)
+                                                    {
+                                                        <li>@error.Key: @error.Value</li>
+                                                    }
+                                                </ul>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const orderHeaders = document.querySelectorAll('.order-header');
+
+            orderHeaders.forEach(header => {
+                header.addEventListener('click', function () {
+                    const orderId = this.getAttribute('data-order-id');
+                    const orderDetails = document.querySelector(`.order-details[data-order-id="${orderId}"]`);
+                    const toggleIcon = this.querySelector('.toggle-icon');
+
+                    // Перемикаємо клас expanded
+                    orderDetails.classList.toggle('expanded');
+                    toggleIcon.textContent = orderDetails.classList.contains('expanded') ? '▲' : '▼';
+                });
+            });
+        });
+    </script>
+    <style>
+        .sidebar-panel {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .sidebar-panel .card-header {
+            background-color: var(--card-accent);
+            border-bottom: 1px solid var(--input-border);
+            padding: 1rem;
+        }
+
+        .sidebar-panel .list-group-item {
+            background-color: var(--card-bg);
+            border: none;
+            padding: 0.75rem 1rem;
+        }
+
+        .sidebar-link {
+            color: var(--text-color);
+            text-decoration: none;
+            display: block;
+            transition: color 0.3s ease;
+        }
+
+        .sidebar-link:hover {
+            color: var(--btn-primary-bg);
+        }
+
+        .list-group-item.active {
+            background-color: var(--btn-primary-bg);
+        }
+
+        .list-group-item.active .sidebar-link {
+            color: #ffffff;
+        }
+
+        media (max-width: 767.98px) {
+            .sidebar-panel {
+                margin-bottom: 1.5rem;
+            }
+        }
+    </style>
+}

@@ -11,7 +11,7 @@ namespace Store.Contractors.RoboKassa
     {
         public string Code => "RoboKassa";
 
-        public string Title => "Оплата картой";
+        public string Title => "Оплата картою";
 
         public string GetUri => "RoboKassa";
 
@@ -22,7 +22,7 @@ namespace Store.Contractors.RoboKassa
 
         public OrderPayment CreatePayment(Form form)
         {
-            return new OrderPayment(Code, "Оплата картой", new Dictionary<string, string>());
+            return new OrderPayment(Code, "Оплата картою", new Dictionary<string, string>());
         }
 
         public Form CreateUpdatedForm(int orderId, IReadOnlyDictionary<string, string> values)

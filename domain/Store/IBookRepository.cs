@@ -8,11 +8,11 @@ namespace Store
 {
     public interface IBookRepository
     {
-        IEnumerable<Book> GetAllByIsbn(string title);
-        IEnumerable<Book> GetAllByTitleOrAuthor(string title);
+        Task<IEnumerable<Book>> GetAllByIsbnAsync(string title);
+        Task<IEnumerable<Book>> GetAllByTitleOrAuthorAsync(string title);
 
-        Book GetById(int id);
+        Task<Book> GetByIdAsync(int id);
 
-        IEnumerable<Book> GetAllByIds(IEnumerable<int> bookIds);
+        Task<IEnumerable<Book>> GetAllByIdsAsync(IEnumerable<int> bookIds);
     }
 }
