@@ -5,10 +5,10 @@ using Store.Contractors.RoboKassa;
 using Store.Data.EF;
 using Store.Messages;
 using Store.Web.Contractors;
-using Store.Data.EF;
+using Store.Data.EF.Store;
+using Store.Data.EF.Identity; 
 using Store.Web.App;
 using Microsoft.AspNetCore.Identity;
-using Store.Web.Identity;
 using Microsoft.AspNetCore.Mvc.Razor;
 
 

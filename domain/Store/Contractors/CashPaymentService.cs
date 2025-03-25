@@ -10,7 +10,7 @@ namespace Store.Contractors
     {
         public string Code => "Cash";
 
-        public string Title => "Оплата при получении";
+        public string Title => "Оплата при отриманні";
 
         public Form CreateForm(int orderId)
         {

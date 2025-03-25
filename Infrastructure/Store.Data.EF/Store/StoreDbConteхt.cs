@@ -12,7 +12,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 
 
-namespace Store.Data.EF
+namespace Store.Data.EF.Store
 {
     public class StoreDbContext : DbContext
     {

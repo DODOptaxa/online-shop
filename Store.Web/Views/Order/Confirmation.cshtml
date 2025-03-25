@@ -8,15 +8,15 @@
     <h1 class="mb-4 fw-bold ">Підтвердження номера</h1>
     <div class="row justify-content-center">
         <div class="col-md-6">
-            <div class="card p-4 shadow-sm" style="height:250px">
+            <div class="card p-4 shadow-sm" style="height:250px; max-height:auto">
                 <div class="mb-3">
                     <label for="code" class="form-label">Код підтвердження</label>
                     <input type="text" class="form-control code" name="code" placeholder="0000" maxlength="4" />
                     <small class="confirmate-phone-error error-text text-danger fw-bold fs-5 d-block mt-2"></small>
                 </div>
-                <button onclick="fetchConfirmateCellPhoneErrors('@Model.CellPhone', document.querySelector('input[name=code]').value)" class="btn btn-success btn-custom w-100">Перевірити</button>
+                <button onclick="fetchConfirmateCellPhoneErrors('@Model.CellPhone', document.querySelector('input[name=code]').value)" class="btn btn-success btn-pizdec btn-custom w-100">Перевірити</button>
             </div>
-            <div class="card p-4 shadow-sm" style="height:250px">
+            <div class="card p-4 shadow-sm" style="height:250px; max-height:auto">
                 <div class="mb-3">
                     <label for="cellPhone" class="form-label">Змінити номер</label>
                     <div class="input-group">

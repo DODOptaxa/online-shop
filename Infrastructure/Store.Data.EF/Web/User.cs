@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using Store.Data;
 
-namespace Store.Web.Identity
+namespace Store.Data.EF.Identity
 {
     public class User : IdentityUser
     {

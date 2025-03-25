@@ -27,7 +27,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Store.Web.App", "Application\Store.Web.App\Store.Web.App.csproj", "{4EE5F7CC-1FFA-44CE-86B0-C420B91670FC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Store.Data.EF", "Infrastructure\Store.Data.EF\Store.Data.EF.csproj", "{A479AFA0-5B29-4517-9F3F-68017F2BF1DF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Store.Data.EF", "Infrastructure\Store.Data.EF\Store.Data.EF.csproj", "{A479AFA0-5B29-4517-9F3F-68017F2BF1DF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

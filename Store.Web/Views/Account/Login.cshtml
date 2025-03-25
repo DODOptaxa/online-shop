@@ -3,43 +3,48 @@
 @{
     ViewData["Title"] = "Вхід";
 }
+<div class="container py-5">
+    <h2 class="text-center">Вхід</h2>
+    <div class="card p-4 shadow-sm mx-auto" style="max-width: 550px; height:auto;">
+        <div class="row justify-content-center">
+            <div class="col-12">
+                <form asp-action="Login" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger text-center"></div>
 
-<h2>Вхід</h2>
+                    <div class="form-group mb-3">
+                        <label asp-for="Name" class="control-label d-block text-center">Ім'я</label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger d-block text-center"></span>
+                    </div>
 
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Login" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group mb-3">
+                        <label asp-for="Password" class="control-label d-block text-center">Пароль</label>
+                        <input asp-for="Password" class="form-control" />
+                        <span asp-validation-for="Password" class="text-danger d-block text-center"></span>
+                    </div>
 
-            <div class="form-group">
-                <label asp-for="Name" class="control-label">Ім'я</label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+                    <div class="form-group form-check mb-3 text-center">
+                        <label asp-for="RememberMe" class="control-label">
+                            Запам'ятати мене
+                            <input asp-for="RememberMe" class="form-check-input" />
+                        </label>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <button type="submit" class="btn btn-outline-success btn-custom w-100">Увійти</button>
+                    </div>
+                </form>
+
+                <div class="form-group mb-3">
+                    <p class="text-center">
+                        <a asp-action="Register" asp-controller="Account">Ще немає акаунта? Зареєструйтесь</a>
+                    </p>
+                </div>
             </div>
-
-            <div class="form-group">
-                <label asp-for="Password" class="control-label">Пароль</label>
-                <input asp-for="Password" class="form-control" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-
-            <div class="form-group form-check">
-                <label asp-for="RememberMe" class="form-check-label"> Запам'ятати мене
-                    <input asp-for="RememberMe" class="form-check-input" /> 
-                </label>
-            </div>
-
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary">Увійти</button>
-            </div>
-        </form>
-
-        <p>
-            <a asp-action="Register" asp-controller="Account">Ще немає акаунта? Зареєструйтесь</a>
-        </p>
+        </div>
     </div>
 </div>
-
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
+<div class="container py-5">
+    @section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+    }

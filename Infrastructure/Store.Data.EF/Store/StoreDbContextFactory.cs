@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
-namespace Store.Data.EF
+namespace Store.Data.EF.Store
 {
     public class StoreDbContextFactory 
     {

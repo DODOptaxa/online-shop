@@ -5,7 +5,7 @@ namespace Store.Web.Models
     public class RegisterViewModel
     {
         [Required(ErrorMessage ="Пуста комірка")]
-        [StringLength(100, MinimumLength = 6, ErrorMessage ="Довжина паролю від 6 до 100 символів")]
+        [StringLength(30, MinimumLength = 6, ErrorMessage ="Довжина паролю від 6 до 30 символів")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
 

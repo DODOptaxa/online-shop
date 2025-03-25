@@ -1,4 +1,4 @@
-﻿using Store.Web.Identity;
+﻿using Store.Data.EF.Identity;
 using Store.Web.Models;
 namespace Store.Web
 {
