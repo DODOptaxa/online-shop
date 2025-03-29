@@ -58,8 +58,6 @@ namespace Store.Data.EF.Store
         {
             var dbContext = dbContextFactory.Create(typeof(OrderRepository));
 
-            // Припускаю, що об'єкт order уже відстежується контекстом або оновлюється через DTO.
-            // Якщо потрібне явне оновлення, додайте логіку перед SaveChangesAsync.
             await dbContext.SaveChangesAsync();
         }
     }

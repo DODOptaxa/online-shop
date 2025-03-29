@@ -35,6 +35,7 @@ html {
     --btn-danger-bg: #dc3545;
     --btn-danger-hover: #c82333;
     --h1-color: #000000;
+    --image: #f7f7f7;
 }
 
 /* Темна тема */
@@ -68,6 +69,7 @@ html {
     --btn-danger-bg: #e74c3c;
     --btn-danger-hover: #ff6b6b;
     --h1-color: #FFD700;
+    --image: #3c3b3b;
 }
 
 /* Базові стилі */
@@ -82,7 +84,9 @@ html {
         font-size: 16px;
     }
 }
-
+p{
+    color: var(--text-color);
+}
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: var(--background-color);
@@ -883,4 +887,49 @@ a:hover {
     .order-card .badge {
         font-size: 0.8rem;
     }
+}
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    filter: invert(50%) sepia(0%) saturate(100%) hue-rotate(0deg) brightness(100%) contrast(100%);
+}
+.comment-compact .card-body {
+    padding: 0.75rem; 
+}
+
+.comment-compact .comment-content {
+    margin-bottom: 0.25rem; 
+    font-size: 0.95rem; 
+    line-height: 1.3; 
+}
+
+.comment-compact .text-muted {
+    font-size: 0.85rem; 
+    margin-bottom: 0.25rem; 
+}
+
+.comment-compact .comment-actions {
+    display: flex; 
+    gap: 0.5rem; 
+}
+
+
+.comment-compact .btn-sm {
+    padding: 0.2rem 0.5rem; 
+    font-size: 0.8rem; 
+}
+.comment {
+    width: auto;
+    height: auto;
+    min-width: 150px;
+    display: flex;
+    width: fit-content;
+    padding-right: 1.5rem;
+}
+.comment-content {
+    padding-top: 15px;
+}
+
+
+#imageModal .modal-content {
+    background-color: var(--image);
 }

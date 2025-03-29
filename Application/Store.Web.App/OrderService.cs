@@ -133,14 +133,21 @@ namespace Store.Web.App
             {
                 order = await orderRepository.CreateAsync();
 
-                using (var scope = _serviceProvider.CreateScope())
+
+                var userManager = httpContextAccessor.HttpContext.RequestServices.GetService<UserManager<User>>();
+                User user = await userManager.GetUserAsync(httpContextAccessor.HttpContext.User);
+                if (user == null) Console.WriteLine();
+                else
                 {
-                    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
-                    User user = await userManager.GetUserAsync(httpContextAccessor.HttpContext.User);
-                    if (user == null) throw new InvalidOperationException("User not found.");
                     user.OrderIds ??= new List<int>();
                     user.OrderIds.Add(order.Id);
                     await userManager.UpdateAsync(user);
+                    
+                    if (user.PhoneNumber != null)
+                    {
+
+                       order.CellPhone = user.PhoneNumber;
+                    }
                 }
 
             }
@@ -209,8 +216,17 @@ namespace Store.Web.App
 
         public async Task<OrderViewModel> SendConfirmationAsync(string cellPhone)
         {
-            var order = await GetOrderAsync();
-            var model = await MapAsync(order);
+            var model = new OrderViewModel();
+            var (hasValue, order) = await TryGetOrderAsync();
+            if (hasValue)
+            {
+                model = await MapAsync(order);
+            }
+            else if(!httpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
+            {
+                throw new InvalidOperationException("Empty session.");
+            }
+
             cellPhone = AddPlus38Prefix(cellPhone);
 
             if (TryFormatPhone(cellPhone, out string formattedPhone))
@@ -286,13 +302,23 @@ namespace Store.Web.App
                 return model;
             }
 
-            var order = await GetOrderAsync();
-            order.CellPhone = cellPhone;
-            await orderRepository.UpdateAsync(order);
+            var userManager = httpContextAccessor.HttpContext.RequestServices.GetService<UserManager<User>>();
+            User user = await userManager.GetUserAsync(httpContextAccessor.HttpContext.User);
+            if (user != null)
+            {                   
+                user.PhoneNumber = cellPhone;
+                await userManager.UpdateAsync(user);
+            }
+            var (HasValue, order) = await TryGetOrderAsync();
+            if (HasValue)
+            {
+                order.CellPhone = cellPhone;
+                await orderRepository.UpdateAsync(order);
+                Session.Remove(cellPhone);
+                return await MapAsync(order);
+            }
 
-            Session.Remove(cellPhone);
-
-            return await MapAsync(order);
+            return model;
         }
 
         public async Task<OrderViewModel> SetDeliveryAsync(OrderDelivery delivery)

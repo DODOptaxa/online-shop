@@ -14,5 +14,11 @@ namespace Store
         Task<Book> GetByIdAsync(int id);
 
         Task<IEnumerable<Book>> GetAllByIdsAsync(IEnumerable<int> bookIds);
+
+        Task<Book> GetByRandom();
+
+        Task<IEnumerable<Book>> GetAllAsync();
+
+        Task UpdateAsync(Book book);
     }
 }

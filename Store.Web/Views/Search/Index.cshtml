@@ -11,7 +11,7 @@
     }
     else
     {
-        <h1 class="mb-4 fw-bold ">Результати пошуку</h1>
+        <h1 class="mb-4 fw-bold">Результати пошуку</h1>
         <div class="row">
             @foreach (var item in Model)
             {
@@ -19,8 +19,16 @@
                     <div class="card shadow-sm h-100 d-flex flex-column">
                         <div class="card-body flex-grow-1">
                             <h5 class="card-title">@item.Title</h5>
-                            <p class="card-text">ID: @item.Id</p>
-                            <p class="card-text"><strong>Ціна:</strong> @item.Price.ToString("C")</p>
+                            <p class="card-text mb-0">
+                                <strong>ID:</strong> @item.Id |
+                                <strong>Автор:</strong> @item.Author |
+                                <strong>Ціна:</strong> @item.Price.ToString("C")
+                            </p>
+                            
+                            <img src="@(item.ImagePath ?? "~/images/placeholder-book.png")"
+                                 alt="@item.Title"
+                                 class="img-fluid mt-3"
+                                 style="max-height: 150px; object-fit: cover;" />
                         </div>
                         <div class="card-footer bg-transparent border-0">
                             <div class="d-flex justify-content-between align-items-center">

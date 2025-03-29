@@ -28,6 +28,18 @@ namespace Store.Data.EF.Store
             return dtos.Select(Book.Mapper.Map);
         }
 
+        public async Task<Book> GetByRandom()
+        {
+            var dbContext = contextFactory.Create(typeof(BookRepository));
+
+            Random rnd = new Random();
+
+            BookDto[] dtos = await dbContext.Books.ToArrayAsync();
+
+            var dto = dtos[rnd.Next(0, dtos.Length)];
+
+            return Book.Mapper.Map(dto);
+        }
         public async Task<IEnumerable<Book>> GetAllByIsbnAsync(string title)
         {
             var dbContext = contextFactory.Create(typeof(BookRepository));
@@ -73,6 +85,23 @@ namespace Store.Data.EF.Store
                                      .SingleOrDefaultAsync(book => book.Id == id);
 
             return Book.Mapper.Map(dto);
+        }
+
+        public async Task<IEnumerable<Book>> GetAllAsync()
+        {
+            var dbContext = contextFactory.Create(typeof(BookRepository));
+
+            var dtos = await dbContext.Books
+                                      .ToListAsync();
+
+            return dtos.Select(Book.Mapper.Map);
+        }
+
+        public async Task UpdateAsync(Book book)
+        {
+            var dbContext = contextFactory.Create(typeof(BookRepository));
+
+            await dbContext.SaveChangesAsync();
         }
     }
 }

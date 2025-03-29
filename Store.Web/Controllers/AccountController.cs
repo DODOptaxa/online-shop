@@ -5,6 +5,7 @@ using Store.Web.App;
 using Store.Data.EF.Identity;
 using Store.Web.Models;
 using System;
+using Store.Data.EF.Store;
 
 
 namespace Store.Web.Controllers
@@ -15,14 +16,17 @@ namespace Store.Web.Controllers
         private readonly SignInManager<User> _signInManager;
         private readonly IOrderRepository _orderRepository;
         private readonly OrderService _orderService;
-
+        private readonly CommentService _commentService;
+        private readonly BookService _bookService;
         public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, 
-            IOrderRepository orderRepository, OrderService orderService)
+            IOrderRepository orderRepository, OrderService orderService, CommentService commentService, BookService bookService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _orderRepository = orderRepository;
             _orderService = orderService;
+            _commentService = commentService;
+            _bookService = bookService;
         }
         [HttpGet]
         [Authorize]
@@ -35,7 +39,7 @@ namespace Store.Web.Controllers
                 ChangeProfileViewModel model = new ChangeProfileViewModel
                 {
                     Name = user.UserName,
-                    cellPhone = user.PhoneNumber
+                    cellPhone = _orderService.RemovePlus38Prefix(user.PhoneNumber)
                 };
                 return View(model);
             }
@@ -201,12 +205,56 @@ namespace Store.Web.Controllers
                 return View(new List<OrderViewModel>());
             }
             var orderViewModels = new List<OrderViewModel>();
-            foreach (var order in orders)
+            foreach (var order in orders.OrderByDescending(c => c.Id).Where(c => c.Payment != null))
             {
                 orderViewModels.Add(await _orderService.MapAsync(order));
             }
 
             return View(orderViewModels);
+        }
+
+
+        public async Task<IActionResult> AddComment(int bookId, string content)
+        {
+            try
+            {
+                var comment = await _commentService.AddCommentAsync(bookId, content); // Допоміжний метод для отримання UserName
+                return Json(new { success = true, comment = _commentService.Map(comment, comment.User.UserName) });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> ChangeComment(int id, string content)
+        {
+            try
+            {
+                var comment = await _commentService.ChangeCommentAsync(id, content);
+                return Json(new { success = true, comment });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> DeleteComment(int id)
+        {
+            try
+            {
+                await _commentService.DeleteCommentAsync(id);
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
         }
     }
 }

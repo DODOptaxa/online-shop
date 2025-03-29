@@ -71,14 +71,14 @@
                     <h3 class="text-center mb-3">Інші параметри</h3>
 
                     <div class="form-group mb-3" style="padding-left: 15px;">
-                        <div class="control-label d-block text-start">Номер телефону: @(Model.cellPhone != null ? Model.cellPhone : "відсутній")</div>
+                        <div class="control-label d-block text-start">Номер телефону: @(Model.cellPhone != null ? "+38" + Model.cellPhone : "відсутній")</div>
                     </div>
-                    <form asp-action="Confirmate" asp-controller="Order" method="post">
-                        <input type="hidden" name="cellPhone" value="@Model.cellPhone" />
-                        <button type="submit" class="btn btn-outline-success btn-custom w-100">
-                            Змінити номер
-                        </button>
-                    </form>
+                    <button onclick="fetchCellPhoneErrors('@Model.cellPhone', '/Account/Index')"
+                            class="btn btn-outline-success btn-custom w-100">
+                        Змінити
+                    </button>
+
+
                 </div>
             </div>
         </div>

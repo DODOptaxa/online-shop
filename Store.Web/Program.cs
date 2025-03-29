@@ -27,18 +27,6 @@ builder.Services.AddSession
     }
     );
 
-builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
-
-var supportedCultures = new[] { "uk-UA", "en-US" }; 
-var localizationOptions = new RequestLocalizationOptions()
-    .SetDefaultCulture("uk-UA")
-    .AddSupportedCultures(supportedCultures)
-    .AddSupportedUICultures(supportedCultures);
-
-builder.Services.AddControllersWithViews()
-    .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
-    .AddDataAnnotationsLocalization();
-
 
 //--- Регистрируем репозитории, бдшку и фабрику ----
 builder.Services.AddEfRepositories(builder.Configuration.GetConnectionString("Store"));
@@ -56,6 +44,9 @@ builder.Services.AddSingleton<INotificationService, DebugNotificationService>();
 builder.Services.AddSingleton<IPaymentService, CashPaymentService>();
 builder.Services.AddSingleton<IPaymentService, RoboKassaPaymentService>();
 builder.Services.AddSingleton<IWebContractorService, RoboKassaPaymentService>();
+builder.Services.AddSingleton<ICommentRepository, CommentRepository>();
+builder.Services.AddSingleton<ApplicationContextFactory>();
+builder.Services.AddSingleton<CommentService>();
 builder.Services.AddSingleton<BookService>();
 builder.Services.AddSingleton<OrderService>();
 
@@ -68,8 +59,6 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-
-app.UseRequestLocalization(localizationOptions);
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
