@@ -15,7 +15,10 @@ namespace Store.Contractors.RoboKassa.Areas.RoboKassa.Controllers
         // Robokassa/Home/Callback
         public IActionResult Callback(decimal totalPrice)
         {
+            Console.WriteLine(totalPrice + " BEFORE");
             TransactionViewModel model = new TransactionViewModel();
+            totalPrice /= 10000M;
+            Console.WriteLine(totalPrice + " AFTER");
             model.TransactionNumber = totalPrice;
             return View(model);
         }

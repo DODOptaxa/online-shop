@@ -10,6 +10,9 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text.Json;
 using NuGet.Protocol;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Store.Data.EF.Identity;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 
 namespace Store.Web.Controllers
 {
@@ -19,16 +22,18 @@ namespace Store.Web.Controllers
         private readonly IEnumerable<IDeliveryService> _deliveryServices;
         private readonly IEnumerable<IPaymentService> _paymentServices;
         private readonly IEnumerable<IWebContractorService> _webContracts;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public OrderController(INotificationService notificationService, IEnumerable<IDeliveryService> deliveryServices,
                                 IEnumerable<IPaymentService> paymentServices, IEnumerable<IWebContractorService> webContracts,
-                                OrderService _orderService)
+                                OrderService _orderService, IHttpContextAccessor httpContextAccessor)
                                 
         {
             orderService = _orderService;
             _deliveryServices = deliveryServices;
             _paymentServices = paymentServices;
             _webContracts = webContracts;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         [HttpGet]
@@ -109,11 +114,12 @@ namespace Store.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Confirmation(string cellPhone)
+        public IActionResult Confirmation(string cellPhone, string returnUrl)
         {
-            var (acces, model) = await orderService.TryGetModelAsync();
-            model.CellPhone = cellPhone;
-            return View(model);
+            ConfirmationModel model = new ConfirmationModel();
+            model.cellPhone = cellPhone;
+            model.returnUrl = returnUrl;
+            return View("Confirmation", model);
         }
 
         [HttpPost]
@@ -144,6 +150,17 @@ namespace Store.Web.Controllers
             var deliveryService = _deliveryServices.First();
             var paymentService = _paymentServices.First();
             var order = await orderService.GetOrderAsync();
+            if (order.CellPhone == null)
+            {
+                var userManager = _httpContextAccessor.HttpContext.RequestServices.GetService<UserManager<User>>();
+                User user = await userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
+                if (user != null)
+                {
+                    order.CellPhone = user.PhoneNumber;
+                }
+                else throw new InvalidOperationException("Null phoneNumber");
+
+            }
             var deliveryForm = deliveryService.CreateForm(order.Id);
             var paymentForm = paymentService.CreateForm(order.Id);
             var model = new DeliveryDetailsViewModel
@@ -183,6 +200,7 @@ namespace Store.Web.Controllers
                 await orderService.SetDeliveryAsync(deliveryService.CreateDelivery(deliveryForm));
                 await orderService.SetPaymentAsync(paymentService.CreatePayment(paymentForm));
                 var webContractorService = _webContracts.SingleOrDefault(service => service.Code == paymentCode);
+                Console.WriteLine(order.TotalPrice - order.Delivery.Amount);
                 if (webContractorService != null)
                 {
                     return RedirectToAction("Index", "Home", new { area = webContractorService.GetUri, totalPrice = order.TotalPrice - order.Delivery.Amount });

@@ -55,9 +55,19 @@
             <label for="cellPhone" class="form-label">Номер телефону</label>
             <div class="input-group" style="max-width: 300px;">
                 <span class="input-group-text phone-input-prefix">| +38 |</span>
-                <input type="text" class="form-control phone-input-field" name="cellPhone" placeholder="000-000-0000" />
+            <input type="text" class="form-control phone-input-field" name="cellPhone" placeholder="000-000-0000" value="@Model.CellPhone" />
             </div>
             <small class="phone-error error-text text-danger fw-bold fs-5 d-block mt-2"></small>
         </div>
-        <button onclick="fetchCellPhoneErrors(document.querySelector('input[name=cellPhone]').value)" class="btn btn-outline-success w-100">Відправити код</button>
+        <button onclick="fetchCellPhoneErrors(document.querySelector('input[name=cellPhone]').value, '/Order/StartDelivery')" class="btn btn-outline-success w-100">Відправити код</button>
+    @if(Model.CellPhone != null)
+    {
+        <form asp-action="StartDelivery" asp-controller="Order" method="get">
+            <button type="submit" class="btn btn-outline-success w-100">
+                У вас уже є підтверджений номер! Почніть оформлення замовлення прямо зараз
+            </button>
+        </form>
+    }
+    
+
 </div>
