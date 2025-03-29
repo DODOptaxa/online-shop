@@ -29,5 +29,9 @@ namespace Store.Data
 
 
         public Dictionary<string, string>? PaymentParameters { get; set; }
+
+        public int? UserId { get; set; }
+
     }
+
 }

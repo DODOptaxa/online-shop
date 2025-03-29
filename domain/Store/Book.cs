@@ -51,6 +51,11 @@ namespace Store
             get => dto.Price;
             set => dto.Price = value;
         }
+        public string ImagePath
+        {
+            get => dto.ImagePath;
+            set => dto.ImagePath = value;
+        }
         internal Book(BookDto dto)
         {
             this.dto = dto;

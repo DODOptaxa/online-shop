@@ -10,6 +10,9 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text.Json;
 using NuGet.Protocol;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Store.Data.EF.Identity;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 
 namespace Store.Web.Controllers
 {
@@ -19,31 +22,35 @@ namespace Store.Web.Controllers
         private readonly IEnumerable<IDeliveryService> _deliveryServices;
         private readonly IEnumerable<IPaymentService> _paymentServices;
         private readonly IEnumerable<IWebContractorService> _webContracts;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public OrderController(INotificationService notificationService, IEnumerable<IDeliveryService> deliveryServices,
                                 IEnumerable<IPaymentService> paymentServices, IEnumerable<IWebContractorService> webContracts,
-                                OrderService _orderService)
+                                OrderService _orderService, IHttpContextAccessor httpContextAccessor)
                                 
         {
             orderService = _orderService;
             _deliveryServices = deliveryServices;
             _paymentServices = paymentServices;
             _webContracts = webContracts;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            if (orderService.TryGetModel(out var Model))
-                { 
-                    return View(Model);
-                }
+            var (result, model) = await orderService.TryGetModelAsync();
+            if (result)
+            {
+                return View(model);
+            }
             return View("Empty");
         }
+
         [HttpPost]
-        public IActionResult AddItem(int id)
+        public async Task<IActionResult> AddItem(int id)
         {
-            var order = orderService.AddBook(id);
+            var order = await orderService.AddBookAsync(id);
 
             return Json(new
             {
@@ -55,9 +62,9 @@ namespace Store.Web.Controllers
         }
 
         [HttpPost]
-        public IActionResult RemoveItem(int id)
+        public async Task<IActionResult> RemoveItem(int id)
         {
-            var order = orderService.RemoveBook(id);
+            var order = await orderService.RemoveBookAsync(id);
 
             return Json(new
             {
@@ -65,13 +72,13 @@ namespace Store.Web.Controllers
                 totalCount = order.TotalCount,
                 totalPrice = order.TotalPrice.ToString("C"),
                 itemCount = order.Items.GetItem(id)?.Count ?? 0
-        });
+            });
         }
 
         [HttpPost]
-        public IActionResult RemoveItems(int id)
+        public async Task<IActionResult> RemoveItems(int id)
         {
-            var order = orderService.RemoveBooks(id);
+            var order = await orderService.RemoveBooksAsync(id);
 
             return Json(new
             {
@@ -83,18 +90,17 @@ namespace Store.Web.Controllers
         }
 
         [HttpPost]
-        public IActionResult SendConfirmationCode(string cellPhone)
+        public async Task<IActionResult> SendConfirmationCode(string cellPhone)
         {
             Console.WriteLine(cellPhone);
-            var model = orderService.SendConfirmation(cellPhone);
+            var model = await orderService.SendConfirmationAsync(cellPhone);
             if (model.Errors.Count > 0)
             {
                 return Json(new
                 {
                     success = true,
                     errors = model.Errors
-                }
-                );
+                });
             }
             else
             {
@@ -107,27 +113,27 @@ namespace Store.Web.Controllers
             }
         }
 
-        public IActionResult Confirmation(string cellPhone)
+        [HttpGet]
+        public IActionResult Confirmation(string cellPhone, string returnUrl)
         {
-            var acces = orderService.TryGetModel(out var model);
-            model.CellPhone = cellPhone;
-            return View(model);
+            ConfirmationModel model = new ConfirmationModel();
+            model.cellPhone = cellPhone;
+            model.returnUrl = returnUrl;
+            return View("Confirmation", model);
         }
 
         [HttpPost]
-        public IActionResult Confirmate(string cellPhone, int code)
+        public async Task<IActionResult> Confirmate(string cellPhone, int code)
         {
-            var model = orderService.ConfirmCellPhone(cellPhone, code);
+            var model = await orderService.ConfirmCellPhoneAsync(cellPhone, code);
             if (model.Errors.Count != 0)
             {
                 return Json(new
                 {
                     success = true,
                     errors = model.Errors
-                }
-                );
+                });
             }
-
             else
             {
                 return Json(new
@@ -137,13 +143,24 @@ namespace Store.Web.Controllers
             }
         }
 
-
-        public IActionResult StartDelivery()
+        [HttpGet]
+        public async Task<IActionResult> StartDelivery()
         {
             Console.WriteLine("StartDelivery");
             var deliveryService = _deliveryServices.First();
             var paymentService = _paymentServices.First();
-            var order = orderService.GetOrder();
+            var order = await orderService.GetOrderAsync();
+            if (order.CellPhone == null)
+            {
+                var userManager = _httpContextAccessor.HttpContext.RequestServices.GetService<UserManager<User>>();
+                User user = await userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
+                if (user != null)
+                {
+                    order.CellPhone = user.PhoneNumber;
+                }
+                else throw new InvalidOperationException("Null phoneNumber");
+
+            }
             var deliveryForm = deliveryService.CreateForm(order.Id);
             var paymentForm = paymentService.CreateForm(order.Id);
             var model = new DeliveryDetailsViewModel
@@ -156,12 +173,12 @@ namespace Store.Web.Controllers
                                                     service => service.Title),
             };
             return View("DeliveryForm", model);
-            
-            
         }
-        public IActionResult UpdateDelivery(int id, string deliveryCode, string paymentCode, Dictionary<string, string> values, bool final = false)
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateDelivery(int id, string deliveryCode, string paymentCode,
+                                                       Dictionary<string, string> values, bool final = false)
         {
-            
             var deliveryService = _deliveryServices.Single(service => service.Code == deliveryCode);
             var paymentService = _paymentServices.Single(service => service.Code == paymentCode);
             var deliveryForm = deliveryService.CreateUpdatedForm(id, values);
@@ -179,27 +196,28 @@ namespace Store.Web.Controllers
             Console.WriteLine(final);
             if (final)
             {
-                var order = orderService.GetOrder();
-                orderService.SetDelivery(deliveryService.CreateDelivery(deliveryForm));
-                orderService.SetPayment( paymentService.CreatePayment(paymentForm));
+                var order = await orderService.GetOrderAsync();
+                await orderService.SetDeliveryAsync(deliveryService.CreateDelivery(deliveryForm));
+                await orderService.SetPaymentAsync(paymentService.CreatePayment(paymentForm));
                 var webContractorService = _webContracts.SingleOrDefault(service => service.Code == paymentCode);
+                Console.WriteLine(order.TotalPrice - order.Delivery.Amount);
                 if (webContractorService != null)
                 {
                     return RedirectToAction("Index", "Home", new { area = webContractorService.GetUri, totalPrice = order.TotalPrice - order.Delivery.Amount });
                 }
-                else return View("Finish");
-
+                else
+                {
+                    return View("Finish");
+                }
             }
             return View("DeliveryForm", model);
         }
 
-
+        [HttpGet]
         public IActionResult Finish()
         {
             return View();
         }
-
-        
     }
 
     static class ModelFeatures

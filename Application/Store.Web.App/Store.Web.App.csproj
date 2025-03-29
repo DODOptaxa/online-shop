@@ -8,9 +8,11 @@
 		<PackageReference Include="libphonenumber-csharp" Version="8.13.55" />
 		<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.3.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.3.1" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\domain\Store\Store.csproj" />
+		<ProjectReference Include="..\..\Infrastructure\Store.Data.EF\Store.Data.EF.csproj" />
 	</ItemGroup>
 </Project>

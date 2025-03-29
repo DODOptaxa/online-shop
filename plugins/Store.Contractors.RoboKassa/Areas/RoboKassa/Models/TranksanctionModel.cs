@@ -10,5 +10,8 @@ namespace Store.Contractors.RoboKassa.Areas.RoboKassa.Models
     public class TransactionViewModel()
     {
         public decimal TransactionNumber { get; set; }
+
+        public decimal Amount { get; set; }
+
     }
 }

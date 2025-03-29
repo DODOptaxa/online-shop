@@ -4,6 +4,12 @@ using Store.Messages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Identity;
+using Store.Data.EF.Identity;
+using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+
+
 
 namespace Store.Web.App
 {
@@ -13,49 +19,50 @@ namespace Store.Web.App
         private readonly IOrderRepository orderRepository;
         private readonly INotificationService notificationService;
         private readonly IHttpContextAccessor httpContextAccessor;
+        private readonly IServiceProvider _serviceProvider;
+
 
         protected ISession Session => httpContextAccessor.HttpContext.Session;
 
         public OrderService(IBookRepository bookRepository,
                             IOrderRepository orderRepository,
                             INotificationService notificationService,
-                            IHttpContextAccessor httpContextAccessor)
+                            IHttpContextAccessor httpContextAccessor,
+                            IServiceProvider _serviceProvider
+                            )
         {
             this.bookRepository = bookRepository;
             this.orderRepository = orderRepository;
             this.notificationService = notificationService;
             this.httpContextAccessor = httpContextAccessor;
+            this._serviceProvider = _serviceProvider;
         }
 
         private const string UAcode = "+38";
 
-        public bool TryGetModel(out OrderViewModel model)
+        public async Task<(bool hasValue, OrderViewModel model)> TryGetModelAsync()
         {
-            if (TryGetOrder(out Order order))
-            {
-                model = Map(order);
-                return true;
-            }
+            var (hasValue, order) = await TryGetOrderAsync();
+            if (hasValue)
+                return (true, await MapAsync(order));
 
-            model = null;
-            return false;
+            return (false, null);
         }
 
-        internal bool TryGetOrder(out Order order)
+        internal async Task<(bool hasValue, Order order)> TryGetOrderAsync()
         {
             if (Session.TryGetCart(out Cart cart))
             {
-                order = orderRepository.GetById(cart.OrderId);
-                return true;
+                var order = await orderRepository.GetByIdAsync(cart.OrderId);
+                return (true, order);
             }
 
-            order = null;
-            return false;
+            return (false, null);
         }
 
-        internal OrderViewModel Map(Order order)
+        public async Task<OrderViewModel> MapAsync(Order order)
         {
-            var books = GetBooks(order);
+            var books = await GetBooksAsync(order);
             var items = from item in order.Items
                         join book in books on item.BookId equals book.Id
                         select new OrderItemViewModel
@@ -79,16 +86,17 @@ namespace Store.Web.App
             };
         }
 
-        public bool TryGetOrderItem(int id, out OrderItem item)
+        public async Task<(bool hasValue, OrderItem item)> TryGetOrderItemAsync(int id)
         {
-            if (TryGetOrder(out Order order))
+            var (hasValue, order) = await TryGetOrderAsync();
+            if (hasValue)
             {
-                item = order.Items.Get(id);
-                return true;
+                var item = order.Items.Get(id);
+                return (true, item);
             }
-            else{
-                item = null;
-                return false;
+            else
+            {
+                return (false, null);
             }
         }
 
@@ -110,101 +118,130 @@ namespace Store.Web.App
             return phoneNumber;
         }
 
-        internal IEnumerable<Book> GetBooks(Order order)
+        internal async Task<IEnumerable<Book>> GetBooksAsync(Order order)
         {
             var bookIds = order.Items.Select(item => item.BookId);
-
-            return bookRepository.GetAllByIds(bookIds);
+            return await bookRepository.GetAllByIdsAsync(bookIds);
         }
 
-        public OrderViewModel AddBook(int bookId)
+        public async Task<OrderViewModel> AddBookAsync(int bookId)
         {
             Console.WriteLine("Stage1");
 
-            if (!TryGetOrder(out Order order))
-                order = orderRepository.Create();
+            var (hasValue, order) = await TryGetOrderAsync();
+            if (!hasValue)
+            {
+                order = await orderRepository.CreateAsync();
 
-            AddOrUpdateBook(order, bookId);
-            UpdateSession(order);
 
-            return Map(order);
+                var userManager = httpContextAccessor.HttpContext.RequestServices.GetService<UserManager<User>>();
+                User user = await userManager.GetUserAsync(httpContextAccessor.HttpContext.User);
+                if (user == null) Console.WriteLine();
+                else
+                {
+                    user.OrderIds ??= new List<int>();
+                    user.OrderIds.Add(order.Id);
+                    await userManager.UpdateAsync(user);
+                    
+                    if (user.PhoneNumber != null)
+                    {
+
+                       order.CellPhone = user.PhoneNumber;
+                    }
+                }
+
+            }
+
+            await AddOrUpdateBookAsync(order, bookId);
+            await UpdateSessionAsync(order);
+
+            return await MapAsync(order);
         }
 
-        internal void AddOrUpdateBook(Order order, int bookId)
+        internal async Task AddOrUpdateBookAsync(Order order, int bookId)
         {
-            var book = bookRepository.GetById(bookId);
+            var book = await bookRepository.GetByIdAsync(bookId);
             order.Items.Add(book.Id, book.Price);
-
-            orderRepository.Update(order);
+            await orderRepository.UpdateAsync(order);
         }
 
-        internal void UpdateSession(Order order)
+        internal async Task UpdateSessionAsync(Order order)
         {
             var cart = new Cart(order.Id, order.TotalCount, order.TotalPrice);
             Session.Set(cart);
         }
 
-        public OrderViewModel UpdateBook(int bookId, uint count)
+        public async Task<OrderViewModel> UpdateBookAsync(int bookId, uint count)
         {
-            var order = GetOrder();
+            var order = await GetOrderAsync();
             order.Items.Get(bookId).Count = count;
 
-            orderRepository.Update(order);
-            UpdateSession(order);
+            await orderRepository.UpdateAsync(order);
+            await UpdateSessionAsync(order);
 
-            return Map(order);
+            return await MapAsync(order);
         }
 
-        public OrderViewModel RemoveBook(int bookId)
+        public async Task<OrderViewModel> RemoveBookAsync(int bookId)
         {
             Console.WriteLine("REMOVE BOOK");
-            var order = GetOrder();
+            var order = await GetOrderAsync();
             order.Items.RemoveItem(bookId);
 
-            orderRepository.Update(order);
-            UpdateSession(order);
+            await orderRepository.UpdateAsync(order);
+            await UpdateSessionAsync(order);
 
-            return Map(order);
+            return await MapAsync(order);
         }
 
-        public OrderViewModel RemoveBooks(int bookId)
+        public async Task<OrderViewModel> RemoveBooksAsync(int bookId)
         {
-            var order = GetOrder();
+            var order = await GetOrderAsync();
             order.Items.RemoveItems(bookId);
 
-            orderRepository.Update(order);
-            UpdateSession(order);
+            await orderRepository.UpdateAsync(order);
+            await UpdateSessionAsync(order);
 
-            return Map(order);
+            return await MapAsync(order);
         }
 
-        public Order GetOrder()
+        public async Task<Order> GetOrderAsync()
         {
-            if (TryGetOrder(out Order order))
+            var(hasValue, order) = await TryGetOrderAsync();
+            if (hasValue)
                 return order;
 
             throw new InvalidOperationException("Empty session.");
         }
 
-        public OrderViewModel SendConfirmation(string cellPhone)
+        public async Task<OrderViewModel> SendConfirmationAsync(string cellPhone)
         {
-            var order = GetOrder();
-            var model = Map(order);
+            var model = new OrderViewModel();
+            var (hasValue, order) = await TryGetOrderAsync();
+            if (hasValue)
+            {
+                model = await MapAsync(order);
+            }
+            else if(!httpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
+            {
+                throw new InvalidOperationException("Empty session.");
+            }
+
             cellPhone = AddPlus38Prefix(cellPhone);
 
             if (TryFormatPhone(cellPhone, out string formattedPhone))
             {
-                var confirmationCode = 1111; 
+                var confirmationCode = 1111;
                 Session.SetInt32(formattedPhone, confirmationCode);
-                Console.WriteLine(formattedPhone +"<- CURRENT PHONE IN CACHE");
+                Console.WriteLine(formattedPhone + "<- CURRENT PHONE IN CACHE");
                 notificationService.SendConfirmationCode(formattedPhone, confirmationCode);
 
-                //--------------------------------------------------
                 model.CellPhone = RemovePlus38Prefix(formattedPhone);
-                //--------------------------------------------------
             }
             else
+            {
                 model.Errors["cellPhone"] = "ваш номер телефону не відповідає формату +38-000-000-0000";
+            }
 
             return model;
         }
@@ -227,12 +264,11 @@ namespace Store.Web.App
                 string nationalNumber = phoneNumber.NationalNumber.ToString();
                 string countryCode = "+" + phoneNumber.CountryCode;
 
-
-                if (nationalNumber.Length == 9) 
+                if (nationalNumber.Length == 9)
                 {
                     formattedPhone = countryCode + nationalNumber;
                 }
-                else 
+                else
                 {
                     formattedPhone = null;
                     return false;
@@ -247,7 +283,7 @@ namespace Store.Web.App
             }
         }
 
-        public OrderViewModel ConfirmCellPhone(string cellPhone, int confirmationCode)
+        public async Task<OrderViewModel> ConfirmCellPhoneAsync(string cellPhone, int confirmationCode)
         {
             cellPhone = AddPlus38Prefix(cellPhone);
             Console.WriteLine(cellPhone + "<- CURRENT PHONE IN CONFIRMATION");
@@ -266,32 +302,44 @@ namespace Store.Web.App
                 return model;
             }
 
-            var order = GetOrder();
-            order.CellPhone = cellPhone;
-            orderRepository.Update(order);
+            var userManager = httpContextAccessor.HttpContext.RequestServices.GetService<UserManager<User>>();
+            User user = await userManager.GetUserAsync(httpContextAccessor.HttpContext.User);
+            if (user != null)
+            {                   
+                user.PhoneNumber = cellPhone;
+                await userManager.UpdateAsync(user);
+            }
+            var (HasValue, order) = await TryGetOrderAsync();
+            if (HasValue)
+            {
+                order.CellPhone = cellPhone;
+                await orderRepository.UpdateAsync(order);
+                Session.Remove(cellPhone);
+                return await MapAsync(order);
+            }
 
-            Session.Remove(cellPhone);
-
-            return Map(order);
+            return model;
         }
 
-        public OrderViewModel SetDelivery(OrderDelivery delivery)
+        public async Task<OrderViewModel> SetDeliveryAsync(OrderDelivery delivery)
         {
-            var order = GetOrder();
+            var order = await GetOrderAsync();
             order.Delivery = delivery;
-            orderRepository.Update(order);
+            await orderRepository.UpdateAsync(order);
 
-            return Map(order);
+            return await MapAsync(order);
         }
 
-        public OrderViewModel SetPayment(OrderPayment payment)
+        public async Task<OrderViewModel> SetPaymentAsync(OrderPayment payment)
         {
-            var order = GetOrder();
+            var order = await GetOrderAsync();
             order.Payment = payment;
-            orderRepository.Update(order);
+            await orderRepository.UpdateAsync(order);
             Session.RemoveCart();
 
-            return Map(order);
+            return await MapAsync(order);
         }
+
+        
     }
 }

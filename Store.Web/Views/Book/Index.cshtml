@@ -1,26 +1,133 @@
-﻿@model Book
+﻿@using Store.Web.App;
+@model BookViewModel
 @{
     ViewData["Title"] = Model.Title;
+    var comments = ViewBag.Comments as List<CommentModel> ?? new List<CommentModel>();
 }
 
 <div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow-sm">
-                <div class="card-body p-4">
-                    <h1 class="card-title fw-bold mb-3">@Model.Title</h1>
-                    <p class="card-text"><strong>Автор:</strong> @Model.Author</p>
-                    <p class="card-text text-muted">@Model.Description</p>
-                    <p class="card-text"><strong>Ціна:</strong> <span class="text-success fw-bold">@Model.Price.ToString("C")</span></p>
-                </div>
-                <div class="card-footer p-0">
-                    <div class="d-flex justify-content-center align-items-center p-3">
-                        <button onclick="updateCartWiggle(@Model.Id)" class="btn btn-success btn-custom w-100 btn-add-to-cart">
-                            <i class="bi bi-cart-plus me-2"></i>Додати в корзину
-                        </button>
+    <h1 class="mb-4 fw-bold">@Model.Title</h1>
+
+    <div class="card shadow-sm mb-4" style="height:auto">
+        <div class="row g-0">
+            <div class="col-md-8 p-4">
+                <h2>Деталі книги</h2>
+                <p><strong>Назва:</strong> @Model.Title</p>
+                <p><strong>Автор:</strong> @Model.Author</p>
+                <p><strong>Опис:</strong> @Model.Description</p>
+                <p><strong>Ціна:</strong> @Model.Price.ToString("C")</p>
+                <button onclick="updateCartWiggle(@Model.Id)" class="btn btn-success btn-sm btn-custom btn-add-to-cart">
+                    <i class="bi bi-cart-plus me-1"></i>Додати в кошик
+                </button>
+                <form asp-action="UploadImage" asp-controller="Book" method="post" enctype="multipart/form-data" class="mt-4">
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <div class="mb-3">
+                        <label for="image" class="form-label">Завантажити зображення</label>
+                        <input type="file" name="image" id="image" class="form-control" accept="image/*" required />
                     </div>
+                    <button type="submit" class="btn btn-primary">Завантажити</button>
+                </form>
+            </div>
+            <div class="col-md-4 d-flex align-items-center justify-content-center" style="background: var(--image);">
+                <img src="@(Model.ImagePath ?? "~/images/placeholder-book.png")"
+                     alt="Зображення книги"
+                     class="img-fluid rounded clickable-image"
+                     style="max-height: 250px; cursor: pointer;"
+                     data-bs-toggle="modal"
+                     data-bs-target="#imageModal"
+                     data-image-src="@(Model.ImagePath ?? "~/images/placeholder-book.png")" />
+            </div>
+
+        </div>
+    </div>
+
+    
+    <div class="comments-section">
+        <h3>Коментарі</h3>
+        <h5>Коментарів: @comments.Count</h5>
+
+        @if (User.Identity.IsAuthenticated)
+        {
+            <form id="add-comment-form" class="mt-4" data-book-id="@Model.Id">
+                <div class="form-group">
+                    <label for="comment-content">Додати коментар</label>
+                    <textarea id="comment-content" name="content" class="form-control mt-2 mb-0" rows="3" maxlength="305" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-success mb-2">Додати</button>
+                <hr class="my-3" />
+                <small class="comment-error error-text text-danger fw-bold fs-5 d-block mt-2"></small>
+            </form>
+        }
+        else
+        {
+            <p class="mt-4">Увійдіть, щоб додавати коментарі.</p>
+        }
+        <div id="comments-list">
+            @if (comments.Any())
+            {
+                @foreach (var comment in comments)
+                {
+                    <div class="comment card mb-2" data-id="@comment.Id">
+                        <div class="card-body position-relative">
+                            <small class="text-muted">
+                                Автор: @if (User.Identity.Name == comment.UserName)
+                                {
+                                    <strong>@comment.UserName</strong>
+                                }
+                                else
+                                {
+                                    @comment.UserName
+                                }
+                                | @comment.CreatedDate.ToString("g")
+                            </small>
+                            <p class="comment-content" style="font-size: 0.9rem;">@comment.Content</p>
+                        </div>
+                        @if (User.Identity.Name == comment.UserName)
+                        {
+                            <div class="dropdown dropstart position-absolute" style="top: 10px; right: 10px;">
+                                <button class="btn btn-link p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-three-dots-vertical"></i>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><button class="dropdown-item btn btn-sm btn-primary edit-comment">Редагувати</button></li>
+                                    <li><button class="dropdown-item btn btn-sm btn-danger delete-comment">Видалити</button></li>
+                                </ul>
+                            </div>
+                        }
+                    </div>
+                }
+            }
+            else
+            {
+                <p>Коментарів немає.</p>
+            }
+        </div>
+    </div>
+
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрити"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img src="@(Model.ImagePath ?? "~/images/placeholder-book.png")" id="fullSizeImage" alt="Повний розмір" class="img-fluid" style="max-width: 100%;">
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            
+            $('.clickable-image').on('click', function () {
+                var imageSrc = $(this).data('image-src');
+                $('#fullSizeImage').attr('src', imageSrc);
+            });
+    </script>
+}

@@ -1,0 +1,44 @@
+﻿@model Store.Web.Models.RegisterViewModel
+@{
+    ViewData["Title"] = "Реєстрація";
+}
+<div class="container py-5">
+    <h2 class="text-center">Реєстрація</h2>
+    <div class="card p-4 shadow-sm mx-auto" style="max-width: 550px; height: auto;">
+        <div class="row justify-content-center">
+            <div class="col-12">
+                <form asp-action="Register" method="post">
+                    <div class="mb-3">
+                        <div asp-validation-summary="ModelOnly" class="text-danger text-center"></div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="Name" class="control-label d-block text-center">Ім'я</label>
+                            <input asp-for="Name" class="form-control" />
+                            <span asp-validation-for="Name" class="text-danger d-block text-center"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="Password" class="control-label d-block text-center">Пароль</label>
+                            <input asp-for="Password" class="form-control" />
+                            <span asp-validation-for="Password" class="text-danger d-block text-center"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="ConfirmPassword" class="control-label d-block text-center">Підтвердити пароль</label>
+                            <input asp-for="ConfirmPassword" class="form-control" />
+                            <span asp-validation-for="ConfirmPassword" class="text-danger d-block text-center"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-0">
+                        <button type="submit" class="btn btn-outline-success btn-custom w-100">Зареєструватися</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

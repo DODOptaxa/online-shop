@@ -5,8 +5,12 @@ using Store.Contractors.RoboKassa;
 using Store.Data.EF;
 using Store.Messages;
 using Store.Web.Contractors;
-using Store.Data.EF;
+using Store.Data.EF.Store;
+using Store.Data.EF.Identity; 
 using Store.Web.App;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Razor;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,14 +27,26 @@ builder.Services.AddSession
     }
     );
 
+
 //--- Регистрируем репозитории, бдшку и фабрику ----
 builder.Services.AddEfRepositories(builder.Configuration.GetConnectionString("Store"));
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Identity")));
+
+builder.Services.AddIdentity<User, IdentityRole>(options =>
+    options.SignIn.RequireConfirmedAccount = false)
+    .AddEntityFrameworkStores<ApplicationDbContext>();
+    
 
 builder.Services.AddSingleton<IDeliveryService, NovaPoshtaPostmateDeliveryService>();
 builder.Services.AddSingleton<INotificationService, DebugNotificationService>();
 builder.Services.AddSingleton<IPaymentService, CashPaymentService>();
 builder.Services.AddSingleton<IPaymentService, RoboKassaPaymentService>();
 builder.Services.AddSingleton<IWebContractorService, RoboKassaPaymentService>();
+builder.Services.AddSingleton<ICommentRepository, CommentRepository>();
+builder.Services.AddSingleton<ApplicationContextFactory>();
+builder.Services.AddSingleton<CommentService>();
 builder.Services.AddSingleton<BookService>();
 builder.Services.AddSingleton<OrderService>();
 
