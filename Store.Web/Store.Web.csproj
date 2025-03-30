@@ -30,5 +30,9 @@
     <ProjectReference Include="..\plugins\Store.Contractors.RoboKassa\Store.Contractors.RoboKassa.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\images\books\" />
+  </ItemGroup>
+
 
 </Project>
