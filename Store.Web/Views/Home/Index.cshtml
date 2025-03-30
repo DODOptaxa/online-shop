@@ -29,6 +29,10 @@
                             <h5 class="card-title">@book.Title</h5>
                             <p class="card-text">ID: @book.Id</p>
                             <p class="card-text"><strong>Ціна:</strong> @book.Price.ToString("C")</p>
+                            <img src="@(book.ImagePath ?? "~/images/placeholder-book.png")"
+                                 alt="@book.Title"
+                                 class="img-fluid mt-3"
+                                 style="max-height: 150px; object-fit: cover;" />
                         </div>
                         <div class="card-footer bg-transparent border-0 d-flex flex-column">
                             <button onclick="updateCartWiggle(@book.Id)" class="btn btn-success btn-sm btn-custom btn-add-to-cart w-100 mb-2">
