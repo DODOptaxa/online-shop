@@ -6,6 +6,18 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Content Remove="wwwroot\images\books\12_d3ab2d84-0544-468b-9880-58427e396b0a_photo_2025-03-29_12-01-40.jpg" />
+    <Content Remove="wwwroot\images\books\14_eb6d025c-bc54-43b8-a862-6447c8391dcd_30d8fe532cc6773f87ea613fd2dfc436_ce_1280x682x0x84_cropped_1332x8886.jpg" />
+    <Content Remove="wwwroot\images\books\1_5ce7d54b-259a-4dfe-a5ed-44afb6823785_photo_2025-03-29_12-01-40.jpg" />
+    <Content Remove="wwwroot\images\books\1_6e4012d2-f58e-4f35-b1d9-f5ae14750d6b_Практичне заняття 5. Інтеграція України в європейський та світовий простір  виклики і відповіді %282%29.png" />
+    <Content Remove="wwwroot\images\books\1_8be2a13b-ae76-4637-a6cb-6c8e082ad16b_photo_2025-03-20_01-13-34.jpg" />
+    <Content Remove="wwwroot\images\books\1_9a5448ae-beeb-4f4e-b90b-602dec5e422e_IMG_20250321_013145.jpg" />
+    <Content Remove="wwwroot\images\books\1_b056cf00-cef3-4544-93aa-54e6d07816c9_120px-Ukrainian_100_hryvnia%27s_note_of_the_People%27s_repub.jlic_of_Ukraine_%281918%29_front_side.jpg" />
+    <Content Remove="wwwroot\images\books\1_f8f46699-d52b-44c1-8787-210a7885e28e_photo_2025-03-29_12-01-40.jpg" />
+    <Content Remove="wwwroot\images\books\7_3b5df2be-c8e7-4f63-bacc-e5c24e982008_map_of_ukraine.png" />
+  </ItemGroup>
+
 
   <ItemGroup>
 	  <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.3.1" />

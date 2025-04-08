@@ -139,6 +139,7 @@ function removeItems(bookId) {
         success: function (response) {
             if (response.success) {
                 updateCartStatus(response);
+                updateCartRow(bookId, response);
                 $('tr[data-book-id="' + bookId + '"]').remove();
             }
         },

@@ -51,271 +51,271 @@ namespace Store.Data.EF.Store
                     {
                         Id = 1,
                         Isbn = "ISBN 12345-67890",
-                        Author = "D. Knuth",
-                        Title = "Art of Programming",
-                        Description = "This volume begins with basic programming concepts and advanced algorithms.",
-                        Price = 52.00m
+                        Author = "D. Adams",
+                        Title = "The Hitchhiker’s Guide to the Galaxy",
+                        Description = "A comedic journey through space with a towel and a lot of absurdity.",
+                        Price = 42.00m
                     },
                     new BookDto
                     {
                         Id = 2,
                         Isbn = "ISBN 98765-43210",
-                        Author = "R. Martin",
-                        Title = "Clean Code",
-                        Description = "A guide to writing clean, maintainable, and efficient code for developers.",
-                        Price = 45.50m
+                        Author = "G. Orwell",
+                        Title = "1984",
+                        Description = "Big Brother is watching you. A dystopian classic about surveillance.",
+                        Price = 19.84m
                     },
                     new BookDto
                     {
                         Id = 3,
                         Isbn = "ISBN 55555-66666",
-                        Author = "E. Gamma",
-                        Title = "Design Patterns",
-                        Description = "Explores classic software design patterns for object-oriented programming.",
-                        Price = 67.99m
+                        Author = "A. Hitler",
+                        Title = "Mein Kampf",
+                        Description = "A controversial and ironic addition for historical infamy.",
+                        Price = 14.88m
                     },
                     new BookDto
                     {
                         Id = 4,
                         Isbn = "ISBN 11111-22222",
-                        Author = "J. Bloch",
-                        Title = "Effective Java",
-                        Description = "Practical advice on Java programming and best practices for developers.",
-                        Price = 38.75m
+                        Author = "J.K. Rowling",
+                        Title = "Harry Potter and the Philosopher’s Stone",
+                        Description = "A boy wizard discovers magic, broomsticks, and capitalism.",
+                        Price = 25.99m
                     },
                     new BookDto
                     {
                         Id = 5,
                         Isbn = "ISBN 77777-88888",
-                        Author = "S. McConnell",
-                        Title = "Code Complete",
-                        Description = "A comprehensive guide to software construction and best coding practices.",
-                        Price = 59.90m
+                        Author = "S. King",
+                        Title = "The Shining",
+                        Description = "A writer goes mad in a haunted hotel. Redrum!",
+                        Price = 31.50m
                     },
                     new BookDto
                     {
                         Id = 6,
                         Isbn = "ISBN 44444-33333",
-                        Author = "M. Fowler",
-                        Title = "Refactoring",
-                        Description = "Techniques for improving the design of existing code without changing its behavior.",
-                        Price = 49.99m
+                        Author = "E.L. James",
+                        Title = "Fifty Shades of Grey",
+                        Description = "A book that’s somehow both spicy and a punishment to read.",
+                        Price = 9.99m
                     },
                     new BookDto
                     {
                         Id = 7,
                         Isbn = "ISBN 99999-00000",
-                        Author = "B. Kernighan",
-                        Title = "The C Programming Language",
-                        Description = "A definitive guide to the C programming language by its creators.",
-                        Price = 55.25m
+                        Author = "R. Dahl",
+                        Title = "Matilda",
+                        Description = "A genius girl with telekinesis fights back against tyranny.",
+                        Price = 12.75m
                     },
                     new BookDto
                     {
                         Id = 8,
                         Isbn = "ISBN 22222-11111",
-                        Author = "A. Tanenbaum",
-                        Title = "Computer Networks",
-                        Description = "An in-depth exploration of computer networking concepts and protocols.",
-                        Price = 72.30m
+                        Author = "T. Pratchett",
+                        Title = "Good Omens",
+                        Description = "An angel and demon team up to stop the apocalypse. Hilarious.",
+                        Price = 18.30m
                     },
                     new BookDto
                     {
                         Id = 9,
                         Isbn = "ISBN 66666-77777",
-                        Author = "P. Norvig",
-                        Title = "Artificial Intelligence: A Guide",
-                        Description = "A comprehensive introduction to artificial intelligence and its applications.",
-                        Price = 68.50m
+                        Author = "F. Kafka",
+                        Title = "The Metamorphosis",
+                        Description = "Man wakes up as a bug. Life gets weirder from there.",
+                        Price = 15.50m
                     },
                     new BookDto
                     {
                         Id = 10,
                         Isbn = "ISBN 88888-99999",
-                        Author = "L. Bass",
-                        Title = "Software Architecture in Practice",
-                        Description = "Practical guidance on designing and implementing software architectures.",
-                        Price = 54.75m
+                        Author = "M. Twain",
+                        Title = "The Adventures of Tom Sawyer",
+                        Description = "A boy’s mischievous adventures in a simpler, yet chaotic time.",
+                        Price = 22.75m
                     },
                     new BookDto
                     {
                         Id = 11,
                         Isbn = "ISBN 33333-44444",
-                        Author = "K. Beck",
-                        Title = "Test-Driven Development",
-                        Description = "A methodology for writing software by first writing tests, then code.",
-                        Price = 41.20m
+                        Author = "L. Carroll",
+                        Title = "Alice’s Adventures in Wonderland",
+                        Description = "A girl falls into a rabbit hole of nonsense and tea parties.",
+                        Price = 17.20m
                     },
                     new BookDto
                     {
                         Id = 12,
                         Isbn = "ISBN 55555-99999",
-                        Author = "G. Booch",
-                        Title = "Object-Oriented Analysis and Design",
-                        Description = "Fundamentals of object-oriented design and analysis for software engineering.",
-                        Price = 63.80m
+                        Author = "V. Nabokov",
+                        Title = "Lolita",
+                        Description = "A disturbing yet beautifully written tale of obsession.",
+                        Price = 23.80m
                     },
                     new BookDto
                     {
                         Id = 13,
                         Isbn = "ISBN 77777-11111",
-                        Author = "F. Brooks",
-                        Title = "The Mythical Man-Month",
-                        Description = "Insights into software project management and the challenges of large-scale development.",
-                        Price = 47.00m
+                        Author = "J.R.R. Tolkien",
+                        Title = "The Lord of the Rings",
+                        Description = "One ring to rule them all. Hobbits, elves, and epic battles.",
+                        Price = 35.00m
                     },
                     new BookDto
                     {
                         Id = 14,
                         Isbn = "ISBN 22222-55555",
-                        Author = "S. Russell",
-                        Title = "Artificial Intelligence: A Modern Approach",
-                        Description = "A foundational text on AI techniques and their modern applications.",
-                        Price = 79.95m
+                        Author = "H. Melville",
+                        Title = "Moby-Dick",
+                        Description = "A man vs. a whale. Spoiler: the whale wins.",
+                        Price = 29.95m
                     },
                     new BookDto
                     {
                         Id = 15,
                         Isbn = "ISBN 99999-22222",
-                        Author = "C. Hoare",
-                        Title = "Communicating Sequential Processes",
-                        Description = "A theoretical exploration of concurrent programming and process communication.",
-                        Price = 56.30m
+                        Author = "D. Brown",
+                        Title = "The Da Vinci Code",
+                        Description = "Conspiracy, art, and a lot of running around Europe.",
+                        Price = 26.30m
                     },
                     new BookDto
                     {
                         Id = 16,
                         Isbn = "ISBN 44444-66666",
-                        Author = "A. Stepanov",
-                        Title = "Elements of Programming",
-                        Description = "A deep dive into the principles of generic programming and algorithms.",
-                        Price = 50.10m
+                        Author = "A. Rand",
+                        Title = "Atlas Shrugged",
+                        Description = "Capitalism’s Bible, or a really long lecture—your choice.",
+                        Price = 39.10m
                     },
                     new BookDto
                     {
                         Id = 17,
                         Isbn = "ISBN 11111-77777",
-                        Author = "D. Ritchie",
-                        Title = "The UNIX Programming Environment",
-                        Description = "A classic guide to programming in the UNIX environment.",
-                        Price = 44.90m
+                        Author = "N. Gogol",
+                        Title = "Dead Souls",
+                        Description = "A man buys dead peasants. Russian satire at its finest.",
+                        Price = 21.90m
                     },
                     new BookDto
                     {
                         Id = 18,
                         Isbn = "ISBN 88888-33333",
-                        Author = "B. Stroustrup",
-                        Title = "The C++ Programming Language",
-                        Description = "A comprehensive reference for C++ programming by its creator.",
-                        Price = 73.25m
+                        Author = "C. Palahniuk",
+                        Title = "Fight Club",
+                        Description = "The first rule: don’t talk about it. Oops.",
+                        Price = 27.25m
                     },
                     new BookDto
                     {
                         Id = 19,
                         Isbn = "ISBN 66666-44444",
-                        Author = "J. Meyer",
-                        Title = "Object-Oriented Software Construction",
-                        Description = "Principles and practices for building robust object-oriented software.",
-                        Price = 61.50m
+                        Author = "J. Austen",
+                        Title = "Pride and Prejudice",
+                        Description = "Love, snark, and Regency-era drama.",
+                        Price = 14.50m
                     },
                     new BookDto
                     {
                         Id = 20,
                         Isbn = "ISBN 33333-88888",
-                        Author = "T. DeMarco",
-                        Title = "Peopleware",
-                        Description = "A focus on the human side of software development and team dynamics.",
-                        Price = 39.80m
+                        Author = "K. Marx",
+                        Title = "The Communist Manifesto",
+                        Description = "Workers unite! A short book with big ideas.",
+                        Price = 5.80m
                     },
                     new BookDto
                     {
                         Id = 21,
                         Isbn = "ISBN 55555-22222",
-                        Author = "W. Stevens",
-                        Title = "TCP/IP Illustrated",
-                        Description = "A detailed examination of TCP/IP protocols and network programming.",
-                        Price = 65.00m
+                        Author = "H.P. Lovecraft",
+                        Title = "The Call of Cthulhu",
+                        Description = "Cosmic horror with tentacles. Sweet dreams!",
+                        Price = 13.00m
                     },
                     new BookDto
                     {
                         Id = 22,
                         Isbn = "ISBN 99999-55555",
-                        Author = "D. Thomas",
-                        Title = "Programming Ruby",
-                        Description = "An introduction to Ruby programming and its practical applications.",
-                        Price = 42.30m
+                        Author = "E. Hemingway",
+                        Title = "The Old Man and the Sea",
+                        Description = "An old man fights a fish. It’s deeper than it sounds.",
+                        Price = 16.30m
                     },
                     new BookDto
                     {
                         Id = 23,
                         Isbn = "ISBN 77777-33333",
-                        Author = "E. Yourdon",
-                        Title = "Modern Structured Analysis",
-                        Description = "Techniques for structured analysis in software engineering.",
-                        Price = 48.60m
+                        Author = "A. Camus",
+                        Title = "The Stranger",
+                        Description = "Life is absurd, and so is this guy’s trial.",
+                        Price = 18.60m
                     },
                     new BookDto
                     {
                         Id = 24,
                         Isbn = "ISBN 22222-99999",
-                        Author = "P. Wegner",
-                        Title = "Interactive Computing Systems",
-                        Description = "A study of interactive systems and their design principles.",
-                        Price = 57.20m
+                        Author = "R. Bradbury",
+                        Title = "Fahrenheit 451",
+                        Description = "Books burn at 451°F. A warning about censorship.",
+                        Price = 20.20m
                     },
                     new BookDto
                     {
                         Id = 25,
                         Isbn = "ISBN 11111-66666",
-                        Author = "R. Sedgewick",
-                        Title = "Algorithms",
-                        Description = "A comprehensive guide to algorithms and data structures.",
-                        Price = 71.90m
+                        Author = "W. Shakespeare",
+                        Title = "Hamlet",
+                        Description = "To be or not to be—ghosts, revenge, and skulls.",
+                        Price = 11.90m
                     },
                     new BookDto
                     {
                         Id = 26,
                         Isbn = "ISBN 88888-44444",
-                        Author = "C. Alexander",
-                        Title = "A Pattern Language",
-                        Description = "Architectural patterns applicable to software design and urban planning.",
-                        Price = 55.75m
+                        Author = "T. Morrison",
+                        Title = "Beloved",
+                        Description = "A haunting tale of slavery’s aftermath.",
+                        Price = 24.75m
                     },
                     new BookDto
                     {
                         Id = 27,
                         Isbn = "ISBN 66666-55555",
-                        Author = "J. Rumbaugh",
-                        Title = "Unified Modeling Language",
-                        Description = "An introduction to UML for modeling software systems.",
-                        Price = 43.90m
+                        Author = "J. Swift",
+                        Title = "Gulliver’s Travels",
+                        Description = "Tiny people, giants, and a horse society. Satire galore.",
+                        Price = 15.90m
                     },
                     new BookDto
                     {
                         Id = 28,
                         Isbn = "ISBN 33333-99999",
-                        Author = "G. Kiczales",
-                        Title = "Aspect-Oriented Programming",
-                        Description = "Explores aspect-oriented programming techniques and applications.",
-                        Price = 60.40m
+                        Author = "M. Shelley",
+                        Title = "Frankenstein",
+                        Description = "A scientist plays God, and it goes about as well as you’d expect.",
+                        Price = 17.40m
                     },
                     new BookDto
                     {
                         Id = 29,
                         Isbn = "ISBN 55555-11111",
-                        Author = "D. Parnas",
-                        Title = "Software Fundamentals",
-                        Description = "Fundamental principles of software design and modularization.",
-                        Price = 46.15m
+                        Author = "P. Coelho",
+                        Title = "The Alchemist",
+                        Description = "Follow your dreams, find treasure, and overthink everything.",
+                        Price = 19.15m
                     },
                     new BookDto
                     {
                         Id = 30,
                         Isbn = "ISBN 99999-77777",
-                        Author = "A. Kay",
-                        Title = "The Early History of Smalltalk",
-                        Description = "A historical overview of Smalltalk and object-oriented programming.",
-                        Price = 53.60m
+                        Author = "D. Trump",
+                        Title = "The Art of the Deal",
+                        Description = "Bigly business advice from a guy with gold hair.",
+                        Price = 45.60m
                     }
                 );
             });
