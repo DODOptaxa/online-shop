@@ -10,6 +10,7 @@ using Store.Data.EF.Identity;
 using Store.Web.App;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Razor;
+using System;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -51,6 +52,15 @@ builder.Services.AddSingleton<BookService>();
 builder.Services.AddSingleton<OrderService>();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db1 = scope.ServiceProvider.GetRequiredService<StoreDbContext>();
+    db1.Database.Migrate();
+
+    var db2 = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    db2.Database.Migrate();
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

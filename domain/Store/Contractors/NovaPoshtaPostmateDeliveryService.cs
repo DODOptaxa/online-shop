@@ -404,7 +404,7 @@
                 {nameof(postamateId), postamateId},
                 {nameof(postamateName), postamateName},
             };
-            var description = $"Город: {cityName}\nПостамат: {postamateName}";
+            var description = $"Місто: {cityName}\nПосштомат: {postamateName}";
             return new OrderDelivery(Code, description, 150m, parameters);
         }
 
@@ -412,7 +412,7 @@
         {
             return new Form(Code, orderId, new[]
             {
-                new Field("Город", "city", "1", false ,cities),
+                new Field("Місто", "city", "1", false ,cities),
                 new Field("Поштомат", "postamate", "1", false , postamates["1"]),
             });
         }
@@ -422,7 +422,7 @@
                 {
                     return new Form(Code, orderId, new Field[]
                     {
-                        new Field("Город", "city", values["city"],true, cities),
+                        new Field("Місто", "city", values["city"],true, cities),
                         new Field("Постамат", "postamate", values["postamate"],true, postamates[values["city"]]),
                     });
                 }
